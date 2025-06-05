@@ -9,6 +9,8 @@ export default function Layout() {
             <nav style={{display: 'flex', gap: '1rem', marginBottom: '1rem'}}>
                 <Link to="/">Home</Link>
                 <Link to="/quiz">Quiz</Link>
+                <Link to="/quiz/create">Stwórz quiz</Link>
+                <Link to="/quiz/list">Rozwiąż quiz</Link>
                 <Link to="/about">About</Link>
                 <Link to="/register">Zarejestruj się</Link>
                 {user ? (

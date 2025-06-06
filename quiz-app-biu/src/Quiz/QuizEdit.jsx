@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '../firebase.js';
 
 export default function QuizEdit() {
     const { id } = useParams(); // docId z Firestore

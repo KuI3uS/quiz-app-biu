@@ -1,17 +1,19 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Quiz from './pages/Quiz';
+import Quiz from './Quiz/Quiz.jsx';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RequireAuth from './components/RequireAuth';
-import QuizCreate from './pages/QuizCreate';
-import QuizEngine from './pages/QuizEngine';
-import QuizList from './pages/QuizList';
-import QuizEdit from './pages/QuizEdit';
+import QuizCreate from './Quiz/QuizCreate.jsx';
+import QuizEngine from './Quiz/QuizEngine.jsx';
+import QuizList from './Quiz/QuizList.jsx';
+import QuizEdit from './Quiz/QuizEdit.jsx';
 import ResetPassword from './pages/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword';
+import UserDashboard from "./user/UserDashboard.jsx";
+import QuizRandom from "./Quiz/QuizRandom.jsx";
 
 function App() {
     return (
@@ -25,6 +27,8 @@ function App() {
                 <Route path="quiz/edit/:id" element={<QuizEdit />} />
                 <Route path="reset" element={<ResetPassword />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/dashboard" element={<UserDashboard />} />
+                <Route path="/random" element={<QuizRandom />} />
 
                 {/* 🔒 Chroniona trasa */}
                 <Route

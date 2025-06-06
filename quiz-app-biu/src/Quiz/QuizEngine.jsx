@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function QuizEngine() {
     const { id } = useParams();
@@ -14,22 +14,20 @@ export default function QuizEngine() {
     const [score, setScore] = useState(0);
     const [finished, setFinished] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
+    const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
     const { user } = useAuth();
+    const timerRef = useRef(null);
 
     useEffect(() => {
         const fetchQuiz = async () => {
-            try {
-                const ref = doc(db, 'quizzes', id);
-                const snapshot = await getDoc(ref);
-                if (snapshot.exists()) {
-                    const quizData = { docId: snapshot.id, ...snapshot.data() };
-                    setQuiz(quizData);
-                    setTimeLeft(quizData.timeLimit || 60);
-                } else {
-                    alert('Quiz nie istnieje');
-                }
-            } catch (err) {
-                alert('Błąd pobierania quizu: ' + err.message);
+            const ref = doc(db, 'quizzes', id);
+            const snapshot = await getDoc(ref);
+            if (snapshot.exists()) {
+                const quizData = { docId: snapshot.id, ...snapshot.data() };
+                setQuiz(quizData);
+                setTimeLeft(quizData.timeLimit || 60);
+            } else {
+                alert('Quiz nie istnieje');
             }
         };
         fetchQuiz();
@@ -37,17 +35,19 @@ export default function QuizEngine() {
 
     useEffect(() => {
         if (finished || !quiz) return;
-        const timer = setInterval(() => {
+
+        timerRef.current = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) {
-                    clearInterval(timer);
+                    clearInterval(timerRef.current);
                     setFinished(true);
                     return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
-        return () => clearInterval(timer);
+
+        return () => clearInterval(timerRef.current);
     }, [quiz, finished]);
 
     const handleAnswer = (answer) => {
@@ -59,7 +59,11 @@ export default function QuizEngine() {
                 isCorrect = answer === current.correctAnswerIndex;
                 break;
             case 'multiple':
-                isCorrect = JSON.stringify(answer.sort()) === JSON.stringify(current.correctAnswerIndex.sort());
+                if (Array.isArray(answer) && Array.isArray(current.correctAnswerIndex)) {
+                    isCorrect = JSON.stringify([...answer].sort()) === JSON.stringify([...current.correctAnswerIndex].sort());
+                } else {
+                    console.error('Pytanie wielokrotnego wyboru ma niepoprawny format danych.');
+                }
                 break;
             case 'boolean':
                 isCorrect = answer === current.correctAnswer;
@@ -71,25 +75,43 @@ export default function QuizEngine() {
                 break;
         }
 
+        setIsCorrectAnswer(isCorrect);
+        setSelected(answer);
         if (isCorrect) setScore(prev => prev + 1);
 
+        clearInterval(timerRef.current);
+
+        const isLastQuestion = currentQuestion + 1 >= quiz.questions.length;
+
         setTimeout(() => {
-            if (currentQuestion + 1 < quiz.questions.length) {
-                setCurrentQuestion(prev => prev + 1);
-                setSelected(null);
-                setMultiSelected([]);
-                setOpenAnswer('');
-            } else {
+            if (isLastQuestion) {
                 setFinished(true);
                 if (user) {
                     addDoc(collection(db, 'results'), {
                         uid: user.uid,
                         quizId: quiz.docId,
-                        score,
+                        score: isCorrect ? score + 1 : score,
                         total: quiz.questions.length,
                         timestamp: new Date()
                     });
                 }
+            } else {
+                setCurrentQuestion(prev => prev + 1);
+                setSelected(null);
+                setIsCorrectAnswer(null);
+                setMultiSelected([]);
+                setOpenAnswer('');
+                setTimeLeft(quiz.timeLimit || 60);
+                timerRef.current = setInterval(() => {
+                    setTimeLeft(prev => {
+                        if (prev <= 1) {
+                            clearInterval(timerRef.current);
+                            setFinished(true);
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
             }
         }, 1000);
     };
@@ -98,11 +120,7 @@ export default function QuizEngine() {
 
     if (finished) {
         const percent = ((score / quiz.questions.length) * 100).toFixed(0);
-        return (
-            <h2>
-                Twój wynik: {score} / {quiz.questions.length} ({percent}%)
-            </h2>
-        );
+        return <h2>Twój wynik: {score} / {quiz.questions.length} ({percent}%)</h2>;
     }
 
     const q = quiz.questions[currentQuestion];
@@ -120,16 +138,11 @@ export default function QuizEngine() {
                         <li key={idx}>
                             <button
                                 disabled={selected !== null}
-                                onClick={() => {
-                                    setSelected(idx);
-                                    handleAnswer(idx);
-                                }}
+                                onClick={() => handleAnswer(idx)}
                                 style={{
                                     backgroundColor:
                                         selected === idx
-                                            ? idx === q.correctAnswerIndex
-                                                ? 'green'
-                                                : 'red'
+                                            ? isCorrectAnswer ? 'green' : 'red'
                                             : ''
                                 }}
                             >
@@ -145,11 +158,23 @@ export default function QuizEngine() {
                     <ul>
                         {q.answers.map((answer, idx) => (
                             <li key={idx}>
-                                <label>
+                                <label
+                                    style={{
+                                        backgroundColor:
+                                            selected !== null
+                                                ? quiz.questions[currentQuestion].correctAnswerIndex.includes(idx)
+                                                    ? 'green'
+                                                    : multiSelected.includes(idx)
+                                                        ? 'red'
+                                                        : ''
+                                                : ''
+                                    }}
+                                >
                                     <input
                                         type="checkbox"
                                         checked={multiSelected.includes(idx)}
                                         onChange={() => {
+                                            if (selected !== null) return;
                                             setMultiSelected(prev =>
                                                 prev.includes(idx)
                                                     ? prev.filter(i => i !== idx)
@@ -163,10 +188,13 @@ export default function QuizEngine() {
                             </li>
                         ))}
                     </ul>
-                    <button disabled={selected !== null} onClick={() => {
-                        setSelected('answered');
-                        handleAnswer(multiSelected);
-                    }}>
+                    <button
+                        disabled={selected !== null}
+                        onClick={() => {
+                            setSelected('answered');
+                            handleAnswer(multiSelected);
+                        }}
+                    >
                         Zatwierdź
                     </button>
                 </div>
@@ -174,24 +202,24 @@ export default function QuizEngine() {
 
             {q.type === 'boolean' && (
                 <div>
-                    <button
-                        disabled={selected !== null}
-                        onClick={() => {
-                            setSelected(true);
-                            handleAnswer(true);
-                        }}
-                    >
-                        Prawda
-                    </button>
-                    <button
-                        disabled={selected !== null}
-                        onClick={() => {
-                            setSelected(false);
-                            handleAnswer(false);
-                        }}
-                    >
-                        Fałsz
-                    </button>
+                    {['Prawda', 'Fałsz'].map((label, idx) => {
+                        const val = label === 'Prawda';
+                        return (
+                            <button
+                                key={label}
+                                disabled={selected !== null}
+                                onClick={() => handleAnswer(val)}
+                                style={{
+                                    backgroundColor:
+                                        selected === val
+                                            ? isCorrectAnswer ? 'green' : 'red'
+                                            : ''
+                                }}
+                            >
+                                {label}
+                            </button>
+                        );
+                    })}
                 </div>
             )}
 
@@ -202,13 +230,16 @@ export default function QuizEngine() {
                         value={openAnswer}
                         onChange={(e) => setOpenAnswer(e.target.value)}
                         disabled={selected !== null}
+                        style={{
+                            backgroundColor:
+                                selected !== null
+                                    ? isCorrectAnswer ? 'lightgreen' : '#f88'
+                                    : ''
+                        }}
                     />
                     <button
                         disabled={selected !== null}
-                        onClick={() => {
-                            setSelected('answered');
-                            handleAnswer(openAnswer);
-                        }}
+                        onClick={() => handleAnswer(openAnswer)}
                     >
                         Zatwierdź
                     </button>

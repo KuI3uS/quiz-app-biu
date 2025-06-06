@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
+import { db } from '../firebase.js';
 import {
     collection,
     getDocs,
@@ -9,7 +9,7 @@ import {
     deleteDoc,
     doc,
 } from 'firebase/firestore';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function QuizList() {
     const [quizzes, setQuizzes] = useState([]);

@@ -10,6 +10,8 @@ import QuizCreate from './pages/QuizCreate';
 import QuizEngine from './pages/QuizEngine';
 import QuizList from './pages/QuizList';
 import QuizEdit from './pages/QuizEdit';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
     return (
@@ -21,6 +23,8 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="quiz/edit/:id" element={<QuizEdit />} />
+                <Route path="reset" element={<ResetPassword />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 {/* 🔒 Chroniona trasa */}
                 <Route

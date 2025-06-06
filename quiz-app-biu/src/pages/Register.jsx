@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,9 +10,10 @@ export default function Register() {
 
     const handleRegister = async () => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert('Konto utworzone!');
-            navigate('/quiz');
+            const result = await createUserWithEmailAndPassword(auth, email, password);
+            await sendEmailVerification(result.user);
+            alert('Zarejestrowano! Sprawdź e-mail w celu potwierdzenia konta.');
+            navigate('/login');
         } catch (err) {
             alert('Błąd rejestracji: ' + err.message);
         }
@@ -23,7 +24,7 @@ export default function Register() {
             <h1>Rejestracja</h1>
             <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input placeholder="Hasło" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button onClick={handleRegister}>Zarejestruj się</button>
+            <button onClick={handleRegister}>Zarejestruj</button>
         </div>
     );
 }

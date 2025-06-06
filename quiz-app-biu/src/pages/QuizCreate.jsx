@@ -69,10 +69,11 @@ export default function QuizCreate() {
         }
 
         const newQuestion = {
-            text: trimmedQuestion,
-            type: questionType,
+            text: trimmed,
             answers: filteredAnswers,
-            correctAnswerIndex,
+            correctAnswerIndex: questionType === 'multiple' ? selectedIndexes : selectedIndex,
+            correctAnswer: questionType === 'open' ? openAnswer : undefined,
+            type: questionType,
         };
 
         let updatedQuestions = [...questions];

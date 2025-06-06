@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function QuizEngine() {
     const { id } = useParams();
@@ -126,11 +127,23 @@ export default function QuizEngine() {
     const q = quiz.questions[currentQuestion];
 
     return (
-        <div>
-            <h1>{quiz.title}</h1>
+        <div className="max-w-screen-md mx-auto p-4">
+            <h1 className="text-2xl text-center font-bold">{quiz.title}</h1>
             <p>Pozostały czas: {timeLeft}s</p>
-            <h3>Pytanie {currentQuestion + 1} z {quiz.questions.length}</h3>
-            <p>{q.text}</p>
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={currentQuestion}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <h3 className="text-lg font-semibold mb-2">
+                        Pytanie {currentQuestion + 1} z {quiz.questions.length}
+                    </h3>
+                    <p className="mb-4">{q.text}</p>
+                </motion.div>
+            </AnimatePresence>
 
             {q.type === 'single' && (
                 <ul>
@@ -189,7 +202,7 @@ export default function QuizEngine() {
                         ))}
                     </ul>
                     <button
-                        disabled={selected !== null}
+                        disabled={selected !== null || multiSelected.length === 0}
                         onClick={() => {
                             setSelected('answered');
                             handleAnswer(multiSelected);
@@ -238,7 +251,7 @@ export default function QuizEngine() {
                         }}
                     />
                     <button
-                        disabled={selected !== null}
+                        disabled={selected !== null || openAnswer.trim() === ''}
                         onClick={() => handleAnswer(openAnswer)}
                     >
                         Zatwierdź

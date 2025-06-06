@@ -19,6 +19,7 @@ export default function QuizCreate() {
     const [editingIndex, setEditingIndex] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleAddAnswer = () => {
         setAnswers([...answers, '']);
@@ -53,8 +54,12 @@ export default function QuizCreate() {
         const trimmedQuestion = questionText.trim();
         const filteredAnswers = answers.map((a) => a.trim()).filter((a) => a !== '');
 
-        if (!trimmedQuestion) {
-            alert("Wpisz treść pytania.");
+        if ((questionType === 'single' || questionType === 'multiple') && filteredAnswers.length < 2) {
+            alert("W pytaniach jednokrotnego i wielokrotnego wyboru muszą być przynajmniej 2 odpowiedzi.");
+            return;
+        }
+        if ((questionType === 'single' || questionType === 'multiple') && correctAnswerIndex == null) {
+            alert("Wybierz poprawną odpowiedź.");
             return;
         }
 
@@ -125,6 +130,7 @@ export default function QuizCreate() {
             uid: user?.uid || null,
         };
 
+        setLoading(true);
         try {
             const docRef = await addDoc(collection(db, 'quizzes'), newQuiz);
             alert('Quiz zapisany!');
@@ -132,6 +138,7 @@ export default function QuizCreate() {
         } catch (err) {
             alert('Błąd zapisu: ' + err.message);
         }
+        setLoading(false);
     };
 
     return (
@@ -231,7 +238,9 @@ export default function QuizCreate() {
                     ))}
                 </ul>
 
-                <button type="submit">Zapisz quiz</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Zapisywanie...' : 'Zapisz quiz'}
+                </button>
             </form>
         </div>
     );

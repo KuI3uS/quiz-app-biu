@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 
 export default function QuizCreate() {
     const [title, setTitle] = useState('');
@@ -14,6 +17,7 @@ export default function QuizCreate() {
     const [answers, setAnswers] = useState(['']);
     const [correctAnswerIndex, setCorrectAnswerIndex] = useState(0);
     const [editingIndex, setEditingIndex] = useState(null);
+    const { user } = useAuth();
 
     const navigate = useNavigate();
 
@@ -86,7 +90,7 @@ export default function QuizCreate() {
         setEditingIndex(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (questions.length === 0) {
@@ -95,7 +99,6 @@ export default function QuizCreate() {
         }
 
         const newQuiz = {
-            id: Date.now(),
             title,
             description,
             category,
@@ -103,13 +106,16 @@ export default function QuizCreate() {
             timeLimit,
             coverImage,
             questions,
+            uid: user?.uid || null,
         };
 
-        const savedQuizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
-        localStorage.setItem('quizzes', JSON.stringify([...savedQuizzes, newQuiz]));
-
-        alert('Quiz zapisany do localStorage!');
-        navigate('/');
+        try {
+            const docRef = await addDoc(collection(db, 'quizzes'), newQuiz);
+            alert('Quiz zapisany do Firestore!');
+            navigate('/quiz/${docRef.id}');
+        } catch (err) {
+            alert('Błąd zapisu: ' + err.message);
+        }
     };
 
     return (

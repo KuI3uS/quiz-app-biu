@@ -9,6 +9,7 @@ import RequireAuth from './components/RequireAuth';
 import QuizCreate from './pages/QuizCreate';
 import QuizEngine from './pages/QuizEngine';
 import QuizList from './pages/QuizList';
+import QuizEdit from './pages/QuizEdit';
 
 function App() {
     return (
@@ -17,9 +18,9 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="about" element={<About />} />
                 <Route path="quiz/:id" element={<QuizEngine />} />
-                <Route path="quiz/list" element={<QuizList />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
+                <Route path="quiz/edit/:id" element={<QuizEdit />} />
 
                 {/* 🔒 Chroniona trasa */}
                 <Route
@@ -35,6 +36,14 @@ function App() {
                     element={
                         <RequireAuth>
                             <QuizCreate />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="quiz/list"
+                    element={
+                        <RequireAuth>
+                            <QuizList />
                         </RequireAuth>
                     }
                 />

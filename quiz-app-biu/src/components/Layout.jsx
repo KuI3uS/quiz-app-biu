@@ -10,7 +10,7 @@ export default function Layout() {
                 <Link to="/">Home</Link>
                 <Link to="/quiz">Quiz</Link>
                 <Link to="/quiz/create">Stwórz quiz</Link>
-                <Link to="/quiz/list">Rozwiąż quiz</Link>
+                <Link to="/quiz/list">Moje quizy</Link>
                 <Link to="/about">About</Link>
                 <Link to="/register">Zarejestruj się</Link>
                 {user ? (

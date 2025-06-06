@@ -1,32 +1,82 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { db } from '../firebase';
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    deleteDoc,
+    doc,
+} from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 
 export default function QuizList() {
-    const [quizzes, setQuizzes] = useState(
-        JSON.parse(localStorage.getItem('quizzes') || '[]')
-    );
+    const [quizzes, setQuizzes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
-    const handleDelete = (id) => {
-        const updated = quizzes.filter((q) => q.id !== id);
-        localStorage.setItem('quizzes', JSON.stringify(updated));
-        setQuizzes(updated);
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            if (!user) return;
+            try {
+                const q = query(
+                    collection(db, 'quizzes'),
+                    where('uid', '==', user.uid)
+                );
+                const snapshot = await getDocs(q);
+                const list = snapshot.docs.map((doc) => ({
+                    docId: doc.id,
+                    ...doc.data(),
+                }));
+                setQuizzes(list);
+            } catch (err) {
+                alert('Błąd pobierania quizów: ' + err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchQuizzes();
+    }, [user]);
+
+    const handleDelete = async (docId) => {
+        if (confirm('Czy na pewno chcesz usunąć quiz?')) {
+            await deleteDoc(doc(db, 'quizzes', docId));
+            setQuizzes((prev) => prev.filter((q) => q.docId !== docId));
+        }
     };
+
+    const downloadJson = (quiz) => {
+        const blob = new Blob([JSON.stringify(quiz, null, 2)], {
+            type: 'application/json',
+        });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${quiz.title}.json`;
+        link.click();
+    };
+
+    if (loading) return <p>Ładowanie quizów...</p>;
 
     return (
         <div>
-            <h1>Dostępne quizy</h1>
-            <ul>
-                {quizzes.map((quiz) => (
-                    <li key={quiz.id}>
-                        <strong>{quiz.title}</strong> – {quiz.questions.length} pyt.
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <Link to={`/quiz/${quiz.id}`}>Rozwiąż</Link>
-                            <Link to={`/quiz/edit/${quiz.id}`}>✏️ Edytuj</Link>
-                            <button onClick={() => handleDelete(quiz.id)}>🗑️ Usuń</button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            <h1>Twoje quizy (z Firestore)</h1>
+            {quizzes.length === 0 ? (
+                <p>Brak quizów w chmurze.</p>
+            ) : (
+                <ul>
+                    {quizzes.map((quiz) => (
+                        <li key={quiz.docId}>
+                            <strong>{quiz.title}</strong> ({quiz.questions?.length || 0} pyt.)
+                            {' '}
+                            <Link to={`/quiz/${quiz.docId}`}>▶️ Rozwiąż</Link>{' '}
+                            <Link to={`/quiz/edit/${quiz.docId}`}>✏️ Edytuj</Link>{' '}
+                            <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>{' '}
+                            <button onClick={() => downloadJson(quiz)}>⬇️ Pobierz JSON</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }

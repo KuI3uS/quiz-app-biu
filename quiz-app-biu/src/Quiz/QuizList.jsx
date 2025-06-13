@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { db } from '../firebase.js';
 import {
     collection,
@@ -15,6 +15,17 @@ export default function QuizList() {
     const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
+    const location = useLocation();
+    const shareUrl = window.location.origin + location.pathname;
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(shareUrl);
+        alert("Link skopiowany!");
+    };
+
+    const handleShareFacebook = () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+    };
 
     useEffect(() => {
         const fetchQuizzes = async () => {
@@ -71,8 +82,11 @@ export default function QuizList() {
                             {' '}
                             <Link to={`/quiz/${quiz.docId}`}>▶️ Rozwiąż</Link>{' '}
                             <Link to={`/quiz/edit/${quiz.docId}`}>✏️ Edytuj</Link>{' '}
-                            <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>{' '}
+                            <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>
+                            {' '}
                             <button onClick={() => downloadJson(quiz)}>⬇️ Pobierz JSON</button>
+                            <button onClick={handleCopyLink}>🔗 Kopiuj link</button>
+                            <button onClick={handleShareFacebook}>📘 Udostępnij na Facebooku</button>
                         </li>
                     ))}
                 </ul>

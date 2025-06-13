@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../firebase.js';
 import { collection, addDoc, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function QuizComments({ quizId }) {
     const { user } = useAuth();

@@ -4,6 +4,7 @@ import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
+import QuizComments from '../components/QuizComments';
 
 export default function QuizEngine() {
     const { id } = useParams();
@@ -121,7 +122,13 @@ export default function QuizEngine() {
 
     if (finished) {
         const percent = ((score / quiz.questions.length) * 100).toFixed(0);
-        return <h2>Twój wynik: {score} / {quiz.questions.length} ({percent}%)</h2>;
+        return (
+            <div>
+                <h2>Twój wynik: {score} / {quiz.questions.length} ({percent}%)</h2>
+
+                <QuizComments quizId={quiz.docId} />
+            </div>
+        );
     }
 
     const q = quiz.questions[currentQuestion];
@@ -256,6 +263,7 @@ export default function QuizEngine() {
                     >
                         Zatwierdź
                     </button>
+
                 </div>
             )}
         </div>

@@ -10,12 +10,24 @@ export default function QuizComments({ quizId }) {
     const [rating, setRating] = useState(5);
 
     useEffect(() => {
-        const fetchComments = async () => {
+        const fetchAverageRating = async () => {
             const q = query(collection(db, 'comments'), where('quizId', '==', quizId));
             const snapshot = await getDocs(q);
-            const list = snapshot.docs.map(doc => doc.data());
-            setComments(list);
+            const ratings = snapshot.docs.map(doc => doc.data().rating);
+            const avg = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+            setAverageRating(avg.toFixed(1));
         };
+        fetchAverageRating();
+    }, [quizId]);
+
+    const fetchComments = async () => {
+        const q = query(collection(db, 'comments'), where('quizId', '==', quizId));
+        const snapshot = await getDocs(q);
+        const list = snapshot.docs.map(doc => doc.data());
+        setComments(list);
+    };
+
+    useEffect(() => {
         fetchComments();
     }, [quizId]);
 
@@ -33,7 +45,10 @@ export default function QuizComments({ quizId }) {
 
         setText('');
         setRating(5);
+
+        fetchComments();
     };
+
 
     return (
         <div>

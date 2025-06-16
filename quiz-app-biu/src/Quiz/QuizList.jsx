@@ -10,6 +10,7 @@ import {
     doc,
 } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext.jsx';
+import CreateDuel from '../duel/CreateDuel.jsx';
 
 export default function QuizList() {
     const [quizzes, setQuizzes] = useState([]);
@@ -77,16 +78,19 @@ export default function QuizList() {
             ) : (
                 <ul>
                     {quizzes.map((quiz) => (
-                        <li key={quiz.docId}>
+                        <li key={quiz.docId} style={{ marginBottom: '1rem' }}>
                             <strong>{quiz.title}</strong> ({quiz.questions?.length || 0} pyt.)
-                            {' '}
-                            <Link to={`/quiz/${quiz.docId}`}>▶️ Rozwiąż</Link>{' '}
-                            <Link to={`/quiz/edit/${quiz.docId}`}>✏️ Edytuj</Link>{' '}
-                            <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>
-                            {' '}
-                            <button onClick={() => downloadJson(quiz)}>⬇️ Pobierz JSON</button>
-                            <button onClick={handleCopyLink}>🔗 Kopiuj link</button>
-                            <button onClick={handleShareFacebook}>📘 Udostępnij na Facebooku</button>
+                            <div style={{ marginTop: '0.5rem' }}>
+                                <CreateDuel quizId={quiz.docId} />
+                            </div>
+                            <div style={{ marginTop: '0.5rem' }}>
+                                <Link to={`/quiz/${quiz.docId}`}>▶️ Rozwiąż</Link>{' '}
+                                <Link to={`/quiz/edit/${quiz.docId}`}>✏️ Edytuj</Link>{' '}
+                                <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>{' '}
+                                <button onClick={() => downloadJson(quiz)}>⬇️ Pobierz JSON</button>{' '}
+                                <button onClick={handleCopyLink}>🔗 Kopiuj link</button>{' '}
+                                <button onClick={handleShareFacebook}>📘 Udostępnij na Facebooku</button>
+                            </div>
                         </li>
                     ))}
                 </ul>

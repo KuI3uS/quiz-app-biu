@@ -14,6 +14,8 @@ export default function Layout() {
                 <Link to="/quiz/list">Moje quizy</Link>
                 <Link to="/about">About</Link>
                 <Link to="/register">Zarejestruj się</Link>
+                <Link to="/leaderboard">Ranking</Link>
+                <Link to="/badges">Odznaki</Link>
                 {user && <Link to="/dashboard">👤 Panel użytkownika</Link>}
                 {user ? (
                     <>

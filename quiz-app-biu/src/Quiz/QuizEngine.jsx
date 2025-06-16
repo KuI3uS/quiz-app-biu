@@ -1,13 +1,20 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
-import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import QuizComments from '../components/QuizComments';
+import Leaderboard from "../pages/Leaderboard.jsx";
+import { jsPDF } from 'jspdf';
 
 export default function QuizEngine() {
     const { id } = useParams();
+    const location = useLocation();
+    const duelId = location.state?.duelId;
+    const { id: quizId } = useParams();
+    const navigate = useNavigate();
+
     const [quiz, setQuiz] = useState(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [selected, setSelected] = useState(null);
@@ -19,6 +26,21 @@ export default function QuizEngine() {
     const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
     const { user } = useAuth();
     const timerRef = useRef(null);
+    const [averageRating, setAverageRating] = useState(0);
+
+    useEffect(() => {
+        if (finished && duelId && user && quiz) {
+            updateDoc(doc(db, 'duels', duelId), {
+                [`results.${user.uid}`]: {
+                    score,
+                    total: quiz.questions.length,
+                    displayName: user.displayName || 'Anonim',
+                    uid: user.uid,
+                    finishedAt: new Date()
+                }
+            });
+        }
+    }, [finished, duelId, user, quiz]);
 
     useEffect(() => {
         const fetchQuiz = async () => {
@@ -36,21 +58,46 @@ export default function QuizEngine() {
     }, [id]);
 
     useEffect(() => {
-        if (finished || !quiz) return;
+        const fetchAverageRating = async () => {
+            const q = query(collection(db, 'comments'), where('quizId', '==', id));
+            const snapshot = await getDocs(q);
+            const ratings = snapshot.docs.map(doc => doc.data().rating);
+            const avg = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+            setAverageRating(avg.toFixed(1));
+        };
+        fetchAverageRating();
+    }, [id]);
 
+    useEffect(() => {
+        if (finished || !quiz) return;
         timerRef.current = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) {
                     clearInterval(timerRef.current);
                     setFinished(true);
+                    if (duelId) {
+                        setTimeout(() => navigate(`/duel/${duelId}`), 1000); // małe opóźnienie, aby zdążyło zapisać wynik
+                    }
                     return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
-
         return () => clearInterval(timerRef.current);
     }, [quiz, finished]);
+
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        const date = new Date().toLocaleDateString();
+        doc.setFontSize(22);
+        doc.text('Certyfikat ukończenia quizu', 20, 30);
+        doc.setFontSize(16);
+        doc.text(`Użytkownik: ${user?.displayName || 'Anonim'}`, 20, 50);
+        doc.text(`Quiz: ${quiz.title}`, 20, 60);
+        doc.text(`Wynik: ${score} / ${quiz.questions.length}`, 20, 70);
+        doc.text(`Data: ${date}`, 20, 80);
+        doc.save(`certyfikat-${quiz.title}.pdf`);
+    };
 
     const handleAnswer = (answer) => {
         const current = quiz.questions[currentQuestion];
@@ -61,19 +108,13 @@ export default function QuizEngine() {
                 isCorrect = answer === current.correctAnswerIndex;
                 break;
             case 'multiple':
-                if (Array.isArray(answer) && Array.isArray(current.correctAnswerIndex)) {
-                    isCorrect = JSON.stringify([...answer].sort()) === JSON.stringify([...current.correctAnswerIndex].sort());
-                } else {
-                    console.error('Pytanie wielokrotnego wyboru ma niepoprawny format danych.');
-                }
+                isCorrect = JSON.stringify([...answer].sort()) === JSON.stringify([...current.correctAnswerIndex].sort());
                 break;
             case 'boolean':
                 isCorrect = answer === current.correctAnswer;
                 break;
             case 'open':
                 isCorrect = answer.trim().toLowerCase() === current.correctAnswer.trim().toLowerCase();
-                break;
-            default:
                 break;
         }
 
@@ -83,19 +124,35 @@ export default function QuizEngine() {
 
         clearInterval(timerRef.current);
 
-        const isLastQuestion = currentQuestion + 1 >= quiz.questions.length;
+        const isLast = currentQuestion + 1 >= quiz.questions.length;
 
-        setTimeout(() => {
-            if (isLastQuestion) {
+        setTimeout(async () => {
+            if (isLast) {
                 setFinished(true);
                 if (user) {
                     addDoc(collection(db, 'results'), {
                         uid: user.uid,
+                        displayName: user.displayName || 'Anonim',
                         quizId: quiz.docId,
-                        score: isCorrect ? score + 1 : score,
+                        score, // użyj aktualnej wartości — nie dodawaj +1
                         total: quiz.questions.length,
                         timestamp: new Date()
                     });
+                }
+                if (duelId) {
+                    const duelRef = doc(db, 'duels', duelId);
+                    await updateDoc(duelRef, {
+                        [`results.${user.uid}`]: {
+                            score: finalScore,
+                            total: quiz.questions.length,
+                            displayName: user.displayName || 'Anonim',
+                            uid: user.uid,
+                            finishedAt: new Date()
+                        }
+                    });
+
+                    // ⏩ Przekieruj do podsumowania
+                    navigate(`/duel/${duelId}`);
                 }
             } else {
                 setCurrentQuestion(prev => prev + 1);
@@ -105,14 +162,11 @@ export default function QuizEngine() {
                 setOpenAnswer('');
                 setTimeLeft(quiz.timeLimit || 60);
                 timerRef.current = setInterval(() => {
-                    setTimeLeft(prev => {
-                        if (prev <= 1) {
-                            clearInterval(timerRef.current);
-                            setFinished(true);
-                            return 0;
-                        }
-                        return prev - 1;
-                    });
+                    setTimeLeft(prev =>
+                        prev <= 1
+                            ? (clearInterval(timerRef.current), setFinished(true), 0)
+                            : prev - 1
+                    );
                 }, 1000);
             }
         }, 1000);
@@ -125,29 +179,33 @@ export default function QuizEngine() {
         return (
             <div>
                 <h2>Twój wynik: {score} / {quiz.questions.length} ({percent}%)</h2>
-
+                <p>⭐ Średnia ocena: {averageRating} / 5</p>
+                {!duelId && (score / quiz.questions.length) >= 0.51 && (
+                    <button onClick={generatePDF}>📄 Pobierz certyfikat PDF</button>
+                )}
+                {(score / quiz.questions.length) < 0.51 && (
+                    <p style={{ color: 'crimson', marginTop: '1rem' }}>
+                        Aby pobrać certyfikat, musisz uzyskać co najmniej 51% poprawnych odpowiedzi.
+                    </p>
+                )}
+                <div style={{ marginTop: '1rem' }}>
+                    <button onClick={() => navigator.clipboard.writeText(window.location.href)}>📋 Skopiuj link do quizu</button>
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" style={{ marginLeft: '1rem' }}>📤 Udostępnij na Facebooku</a>
+                </div>
                 <QuizComments quizId={quiz.docId} />
+                <Leaderboard quizId={quiz.docId} />
             </div>
         );
     }
 
     const q = quiz.questions[currentQuestion];
-
     return (
         <div className="max-w-screen-md mx-auto p-4">
             <h1 className="text-2xl text-center font-bold">{quiz.title}</h1>
             <p>Pozostały czas: {timeLeft}s</p>
             <AnimatePresence mode="wait">
-                <motion.div
-                    key={currentQuestion}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <h3 className="text-lg font-semibold mb-2">
-                        Pytanie {currentQuestion + 1} z {quiz.questions.length}
-                    </h3>
+                <motion.div key={currentQuestion} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                    <h3 className="text-lg font-semibold mb-2">Pytanie {currentQuestion + 1} z {quiz.questions.length}</h3>
                     <p className="mb-4">{q.text}</p>
                 </motion.div>
             </AnimatePresence>

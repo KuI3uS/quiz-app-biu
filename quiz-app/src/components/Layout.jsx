@@ -8,7 +8,6 @@ export default function Layout() {
         <div>
             <nav style={{display: 'flex', gap: '1rem', marginBottom: '1rem'}}>
                 <Link to="/">Home</Link>
-                <Link to="/quiz">Quiz</Link>
                 <Link to="/random">🎲 Losowy quiz</Link>
                 <Link to="/search">🔍 Szukaj quizów</Link>
                 <Link to="/quiz/create">Stwórz quiz</Link>

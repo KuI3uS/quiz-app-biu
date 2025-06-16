@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Quiz from './Quiz/Quiz.jsx';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -18,6 +17,7 @@ import Leaderboard from './pages/Leaderboard';
 import Badges from './pages/Badges';
 import DuelRoom from "./duel/DuelRoom.jsx";
 import SearchQuizzes from './Quiz/SearchQuizzes.jsx';
+import Quiz from './Quiz/Quiz.jsx';
 
 function App() {
     return (
@@ -26,7 +26,6 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="about" element={<About />} />
                 <Route path="quiz/:id" element={<QuizEngine />} />
-                <Route path="quiz/info/:id" element={<RequireAuth><Quiz /></RequireAuth>} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="quiz/edit/:id" element={<QuizEdit />} />
@@ -41,14 +40,7 @@ function App() {
                 <Route path="/search" element={<SearchQuizzes />} />
 
                 {/* 🔒 Chronione */}
-                <Route
-                    path="quiz"
-                    element={
-                        <RequireAuth>
-                            <QuizCreate />
-                        </RequireAuth>
-                    }
-                />
+                <Route path="quiz/info/:id" element={<RequireAuth><Quiz /></RequireAuth>} />
                 <Route
                     path="quiz/create"
                     element={

@@ -13,19 +13,19 @@ export default function SearchQuizzes() {
             const snapshot = await getDocs(collection(db, 'quizzes'));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setQuizzes(data);
-            setFiltered(data);
+            setFiltered(data); // na start pokaż wszystkie
         };
         fetchQuizzes();
     }, []);
 
     useEffect(() => {
-        const lowered = searchTerm.toLowerCase();
+        const term = searchTerm.toLowerCase();
         const results = quizzes.filter(
             quiz =>
-                quiz.title.toLowerCase().includes(lowered) ||
-                quiz.description?.toLowerCase().includes(lowered) ||
-                quiz.category?.toLowerCase().includes(lowered) ||
-                quiz.difficulty?.toLowerCase().includes(lowered)
+                quiz.title?.toLowerCase().includes(term) ||
+                quiz.description?.toLowerCase().includes(term) ||
+                quiz.category?.toLowerCase().includes(term) ||
+                quiz.difficulty?.toLowerCase().includes(term)
         );
         setFiltered(results);
     }, [searchTerm, quizzes]);

@@ -61,14 +61,16 @@ export default function DuelRoom() {
     }
 
     if (duel.status === 'started' && quiz) {
-        if (!userResult) {
-            // Gracz jeszcze nie rozwiązywał quizu
+        const host = duel.results?.[duel.hostUid];
+        const guest = duel.results?.[duel.guestUid];
+        const bothFinished = host && guest;
+
+        if (!bothFinished) {
             return (
                 <div className="p-4">
                     <h2>👊 Pojedynek rozpoczęty!</h2>
                     <h3 className="text-lg font-bold mb-2">Quiz: {quiz.title}</h3>
                     <p className="mb-4">{quiz.description}</p>
-
                     <button
                         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
                         onClick={() =>
@@ -79,6 +81,7 @@ export default function DuelRoom() {
                     >
                         ▶️ Rozpocznij quiz
                     </button>
+                    <p className="mt-4 text-sm">Po zakończeniu zobaczysz wyniki obydwu graczy.</p>
                 </div>
             );
         } else if (!opponentResult) {

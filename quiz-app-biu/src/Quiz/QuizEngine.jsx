@@ -12,7 +12,7 @@ export default function QuizEngine() {
     const { id } = useParams();
     const location = useLocation();
     const duelId = location.state?.duelId;
-    const { id: quizId } = useParams();
+    const { state } = useLocation();
     const navigate = useNavigate();
 
     const [quiz, setQuiz] = useState(null);
@@ -129,12 +129,29 @@ export default function QuizEngine() {
         setTimeout(async () => {
             if (isLast) {
                 setFinished(true);
-                if (user) {
-                    addDoc(collection(db, 'results'), {
+
+                const finalScore = isCorrect ? score + 1 : score;
+
+                if (duelId) {
+                    const duelRef = doc(db, 'duels', duelId);
+                    await updateDoc(duelRef, {
+                        [`results.${user.uid}`]: {
+                            score: finalScore,
+                            total: quiz.questions.length,
+                            displayName: user.displayName || 'Anonim',
+                            uid: user.uid,
+                            finishedAt: new Date()
+                        }
+                    });
+
+                    // Przejdź do pokoju po zapisaniu
+                    navigate(`/duel/${duelId}`);
+                } else if (user) {
+                    await addDoc(collection(db, 'results'), {
                         uid: user.uid,
                         displayName: user.displayName || 'Anonim',
                         quizId: quiz.docId,
-                        score, // użyj aktualnej wartości — nie dodawaj +1
+                        score: finalScore,
                         total: quiz.questions.length,
                         timestamp: new Date()
                     });

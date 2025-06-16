@@ -9,11 +9,11 @@ import Leaderboard from "../pages/Leaderboard.jsx";
 import { jsPDF } from 'jspdf';
 
 export default function QuizEngine() {
-    const { id } = useParams();
+    const { id, duelId: routeDuelId } = useParams();
     const location = useLocation();
-    const duelId = location.state?.duelId;
-    const { state } = useLocation();
+    const duelId = routeDuelId || location.state?.duelId || null;
     const navigate = useNavigate();
+
 
     const [quiz, setQuiz] = useState(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -129,24 +129,9 @@ export default function QuizEngine() {
         setTimeout(async () => {
             if (isLast) {
                 setFinished(true);
-
                 const finalScore = isCorrect ? score + 1 : score;
 
-                if (duelId) {
-                    const duelRef = doc(db, 'duels', duelId);
-                    await updateDoc(duelRef, {
-                        [`results.${user.uid}`]: {
-                            score: finalScore,
-                            total: quiz.questions.length,
-                            displayName: user.displayName || 'Anonim',
-                            uid: user.uid,
-                            finishedAt: new Date()
-                        }
-                    });
-
-                    // Przejdź do pokoju po zapisaniu
-                    navigate(`/duel/${duelId}`);
-                } else if (user) {
+                if (user) {
                     await addDoc(collection(db, 'results'), {
                         uid: user.uid,
                         displayName: user.displayName || 'Anonim',
@@ -156,7 +141,8 @@ export default function QuizEngine() {
                         timestamp: new Date()
                     });
                 }
-                if (duelId) {
+
+                if (duelId && user) {
                     const duelRef = doc(db, 'duels', duelId);
                     await updateDoc(duelRef, {
                         [`results.${user.uid}`]: {
@@ -167,11 +153,9 @@ export default function QuizEngine() {
                             finishedAt: new Date()
                         }
                     });
-
-                    // ⏩ Przekieruj do podsumowania
                     navigate(`/duel/${duelId}`);
                 }
-            } else {
+            }else {
                 setCurrentQuestion(prev => prev + 1);
                 setSelected(null);
                 setIsCorrectAnswer(null);

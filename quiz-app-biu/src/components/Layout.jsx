@@ -10,6 +10,7 @@ export default function Layout() {
                 <Link to="/">Home</Link>
                 <Link to="/quiz">Quiz</Link>
                 <Link to="/random">🎲 Losowy quiz</Link>
+                <Link to="/search">🔍 Szukaj quizów</Link>
                 <Link to="/quiz/create">Stwórz quiz</Link>
                 <Link to="/quiz/list">Moje quizy</Link>
                 <Link to="/about">About</Link>

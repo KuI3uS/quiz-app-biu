@@ -5,6 +5,8 @@ import { db } from '../firebase';
 export default function Leaderboard({ quizId = null }) {
     const [results, setResults] = useState([]);
 
+
+
     useEffect(() => {
         const fetchResults = async () => {
             let q;

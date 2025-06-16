@@ -17,6 +17,7 @@ import QuizRandom from "./Quiz/QuizRandom.jsx";
 import Leaderboard from './pages/Leaderboard';
 import Badges from './pages/Badges';
 import DuelRoom from "./duel/DuelRoom.jsx";
+import SearchQuizzes from './Quiz/SearchQuizzes.jsx';
 
 function App() {
     return (
@@ -37,8 +38,17 @@ function App() {
                 <Route path="/badges" element={<Badges />} />
                 <Route path="/duel/:id" element={<DuelRoom />} />
                 <Route path="duel/quiz/:duelId/:id" element={<QuizEngine />} />
+                <Route path="/search" element={<SearchQuizzes />} />
 
                 {/* 🔒 Chronione */}
+                <Route
+                    path="quiz"
+                    element={
+                        <RequireAuth>
+                            <QuizCreate />
+                        </RequireAuth>
+                    }
+                />
                 <Route
                     path="quiz/create"
                     element={

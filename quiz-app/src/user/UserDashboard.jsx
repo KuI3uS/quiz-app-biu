@@ -3,6 +3,14 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts';
 
 export default function UserDashboard() {
     const { user } = useAuth();
@@ -36,32 +44,60 @@ export default function UserDashboard() {
         ? (results.reduce((sum, r) => sum + r.score / r.total, 0) / results.length * 100).toFixed(1)
         : 'Brak danych';
 
-    return (
-        <div>
-            <h1>Panel użytkownika</h1>
+    // 🔢 Oblicz skuteczność według kategorii
+    const categoryStats = [];
+    const categoriesMap = {};
 
-            <section>
-                <h2>📊 Statystyki</h2>
+    results.forEach(res => {
+        const quiz = quizzes.find(q => q.id === res.quizId);
+        const category = quiz?.category || 'inne';
+
+        if (!categoriesMap[category]) {
+            categoriesMap[category] = { total: 0, correct: 0 };
+        }
+
+        categoriesMap[category].total += res.total;
+        categoriesMap[category].correct += res.score;
+    });
+
+    for (const cat in categoriesMap) {
+        const { total, correct } = categoriesMap[cat];
+        categoryStats.push({
+            category: cat,
+            accuracy: total > 0 ? parseFloat(((correct / total) * 100).toFixed(1)) : 0
+        });
+    }
+
+    return (
+        <div className="p-4 max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6">👤 Panel użytkownika</h1>
+
+            <section className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">📊 Statystyki</h2>
                 <p>Liczba rozwiązanych quizów: {results.length}</p>
                 <p>Średni wynik: {avgScore}%</p>
                 <p>Liczba stworzonych quizów: {quizzes.length}</p>
             </section>
 
-            <section>
-                <h2>📝 Moje quizy</h2>
+            <section className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">📝 Moje quizy</h2>
                 <ul>
                     {quizzes.map((quiz) => (
                         <li key={quiz.id}>
-                            <Link to={`/quiz/${quiz.id}`}>{quiz.title}</Link>
-                            {' | '}
-                            <Link to={`/edit-quiz/${quiz.id}`}>✏️ Edytuj</Link>
+                            <Link to={`/quiz/${quiz.id}`} className="text-blue-600 hover:underline">
+                                {quiz.title}
+                            </Link>{' '}
+                            |{' '}
+                            <Link to={`/quiz/edit/${quiz.id}`} className="text-green-600 hover:underline">
+                                ✏️ Edytuj
+                            </Link>
                         </li>
                     ))}
                 </ul>
             </section>
 
-            <section>
-                <h2>📈 Moje wyniki</h2>
+            <section className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">📈 Moje wyniki</h2>
                 <ul>
                     {results.map((res, idx) => (
                         <li key={idx}>
@@ -69,6 +105,22 @@ export default function UserDashboard() {
                         </li>
                     ))}
                 </ul>
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold mb-2">📉 Skuteczność według kategorii</h2>
+                {categoryStats.length === 0 ? (
+                    <p>Brak danych do wyświetlenia wykresu.</p>
+                ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={categoryStats}>
+                            <XAxis dataKey="category" />
+                            <YAxis domain={[0, 100]} />
+                            <Tooltip />
+                            <Bar dataKey="accuracy" fill="#82ca9d" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                )}
             </section>
         </div>
     );

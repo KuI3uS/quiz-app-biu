@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../firebase';
+import '../styles/Leaderboard.scss';
 
 export default function Leaderboard({ quizId = null }) {
     const [results, setResults] = useState([]);
@@ -24,7 +25,7 @@ export default function Leaderboard({ quizId = null }) {
     }, [quizId]);
 
     return (
-        <div style={{ marginTop: '2rem' }}>
+        <div className="leaderboard">
             <h2>{quizId ? '🏆 Top 5 tego quizu' : '🌍 Globalny ranking (Top 10)'}</h2>
             <ol>
                 {results.map((r, idx) => (

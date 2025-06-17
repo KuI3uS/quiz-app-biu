@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import '../styles/Layout.scss';
 
 export default function Layout() {
     const { user, logout } = useAuth();
@@ -16,7 +17,7 @@ export default function Layout() {
     };
 
     return (
-        <div>
+        <div className="layout">
             <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                 {/* 🔍 Globalna wyszukiwarka */}
                 <form onSubmit={handleSearch} style={{ display: 'inline-flex', gap: '0.5rem' }}>

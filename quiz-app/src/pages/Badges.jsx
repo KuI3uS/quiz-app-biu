@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+import '../styles/Badges.scss';
 
 export default function Badges() {
     const { user } = useAuth();
@@ -21,7 +22,7 @@ export default function Badges() {
     const perfect = results.filter(r => r.score === r.total).length;
 
     return (
-        <div>
+        <div className="badges">
             <h2>🎖️ Twoje odznaki</h2>
             <ul>
                 <li>✅ Ukończone quizy: {completed}</li>

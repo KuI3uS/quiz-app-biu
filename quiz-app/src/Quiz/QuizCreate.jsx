@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext.jsx';
+import '../styles/QuizCreate.scss';
 
 export default function QuizCreate() {
     const [title, setTitle] = useState('');
@@ -142,22 +143,28 @@ export default function QuizCreate() {
     };
 
     return (
-        <div>
+        <div className="quiz-create">
             <h1>Stwórz nowy quiz</h1>
             <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Tytuł" value={title} onChange={(e) => setTitle(e.target.value)} required />
-                <textarea placeholder="Opis" value={description} onChange={(e) => setDescription(e.target.value)} required />
-                <input type="text" placeholder="Kategoria" value={category} onChange={(e) => setCategory(e.target.value)} />
+                <input type="text" placeholder="Tytuł" value={title} onChange={(e) => setTitle(e.target.value)}
+                       required/>
+                <textarea placeholder="Opis" value={description} onChange={(e) => setDescription(e.target.value)}
+                          required/>
+                <input type="text" placeholder="Kategoria" value={category}
+                       onChange={(e) => setCategory(e.target.value)}/>
                 <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                     <option value="easy">Łatwy</option>
                     <option value="medium">Średni</option>
                     <option value="hard">Trudny</option>
                 </select>
-                <input type="number" placeholder="Czas (sekundy)" value={timeLimit} onChange={(e) => setTimeLimit(Number(e.target.value))} />
-                <input type="text" placeholder="Link do okładki" value={coverImage} onChange={(e) => setCoverImage(e.target.value)} />
+                <input type="number" placeholder="Czas (sekundy)" value={timeLimit}
+                       onChange={(e) => setTimeLimit(Number(e.target.value))}/>
+                <input type="text" placeholder="Link do okładki" value={coverImage}
+                       onChange={(e) => setCoverImage(e.target.value)}/>
 
                 <h2>Dodaj pytanie</h2>
-                <input type="text" placeholder="Treść pytania" value={questionText} onChange={(e) => setQuestionText(e.target.value)} />
+                <input type="text" placeholder="Treść pytania" value={questionText}
+                       onChange={(e) => setQuestionText(e.target.value)}/>
                 <select value={questionType} onChange={(e) => {
                     const type = e.target.value;
                     setQuestionType(type);
@@ -170,7 +177,7 @@ export default function QuizCreate() {
                 </select>
 
                 {(questionType === 'single' || questionType === 'multiple') && answers.map((answer, idx) => (
-                    <div key={idx}>
+                    <div className="answer-group" key={idx}>
                         <input
                             type="text"
                             value={answer}
@@ -228,7 +235,7 @@ export default function QuizCreate() {
                     {editingIndex !== null ? 'Zapisz zmiany' : 'Dodaj pytanie'}
                 </button>
 
-                <ul>
+                <ul className="question-list">
                     {questions.map((q, idx) => (
                         <li key={idx}>
                             {q.text} ({q.type}) – {q.answers?.length || 0} odp.

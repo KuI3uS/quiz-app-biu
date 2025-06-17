@@ -7,6 +7,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import QuizComments from '../components/QuizComments';
 import Leaderboard from "../pages/Leaderboard.jsx";
 import { jsPDF } from 'jspdf';
+import '../styles/QuizEngine.scss';
+import useTimer from '../hooks/useTimer';
 
 export default function QuizEngine() {
     const { id, duelId: routeDuelId } = useParams();
@@ -22,10 +24,8 @@ export default function QuizEngine() {
     const [openAnswer, setOpenAnswer] = useState('');
     const [score, setScore] = useState(0);
     const [finished, setFinished] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(60);
     const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
     const { user } = useAuth();
-    const timerRef = useRef(null);
     const [averageRating, setAverageRating] = useState(0);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function QuizEngine() {
             if (snapshot.exists()) {
                 const quizData = { docId: snapshot.id, ...snapshot.data() };
                 setQuiz(quizData);
-                setTimeLeft(quizData.timeLimit || 60);
+                reset(quizData.timeLimit || 60);
             } else {
                 alert('Quiz nie istnieje');
             }
@@ -68,23 +68,10 @@ export default function QuizEngine() {
         fetchAverageRating();
     }, [id]);
 
-    useEffect(() => {
-        if (finished || !quiz) return;
-        timerRef.current = setInterval(() => {
-            setTimeLeft(prev => {
-                if (prev <= 1) {
-                    clearInterval(timerRef.current);
-                    setFinished(true);
-                    if (duelId) {
-                        setTimeout(() => navigate(`/duel/${duelId}`), 1000); // małe opóźnienie, aby zdążyło zapisać wynik
-                    }
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(timerRef.current);
-    }, [quiz, finished]);
+    const { timeLeft, reset, stop } = useTimer(quiz?.timeLimit || 60, () => {
+        setFinished(true);
+        if (duelId) navigate(`/duel/${duelId}`);
+    });
 
     const generatePDF = () => {
         const doc = new jsPDF();
@@ -122,12 +109,12 @@ export default function QuizEngine() {
         setSelected(answer);
         if (isCorrect) setScore(prev => prev + 1);
 
-        clearInterval(timerRef.current);
 
         const isLast = currentQuestion + 1 >= quiz.questions.length;
 
         setTimeout(async () => {
             if (isLast) {
+                stop();
                 setFinished(true);
                 const finalScore = isCorrect ? score + 1 : score;
 
@@ -161,14 +148,7 @@ export default function QuizEngine() {
                 setIsCorrectAnswer(null);
                 setMultiSelected([]);
                 setOpenAnswer('');
-                setTimeLeft(quiz.timeLimit || 60);
-                timerRef.current = setInterval(() => {
-                    setTimeLeft(prev =>
-                        prev <= 1
-                            ? (clearInterval(timerRef.current), setFinished(true), 0)
-                            : prev - 1
-                    );
-                }, 1000);
+                reset(quiz.timeLimit || 60);
             }
         }, 1000);
     };
@@ -201,11 +181,12 @@ export default function QuizEngine() {
 
     const q = quiz.questions[currentQuestion];
     return (
-        <div className="max-w-screen-md mx-auto p-4">
+        <div className="quiz-engine">
             <h1 className="text-2xl text-center font-bold">{quiz.title}</h1>
             <p>Pozostały czas: {timeLeft}s</p>
             <AnimatePresence mode="wait">
-                <motion.div key={currentQuestion} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <motion.div key={currentQuestion} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}
+                            transition={{duration: 0.3}}>
                     <h3 className="text-lg font-semibold mb-2">Pytanie {currentQuestion + 1} z {quiz.questions.length}</h3>
                     <p className="mb-4">{q.text}</p>
                 </motion.div>

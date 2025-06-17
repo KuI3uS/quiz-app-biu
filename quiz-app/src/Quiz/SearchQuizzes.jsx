@@ -3,6 +3,7 @@ import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/f
 import { db } from '../firebase';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../styles/SearchQuizzes.scss';
 
 export default function SearchQuizzes() {
     const [searchParams] = useSearchParams();
@@ -78,7 +79,7 @@ export default function SearchQuizzes() {
     };
 
     return (
-        <div className="p-4 max-w-2xl mx-auto">
+        <div className="search-quizzes">
             <h1 className="text-2xl font-bold mb-4">🔍 Wyszukiwanie quizów</h1>
 
             <input

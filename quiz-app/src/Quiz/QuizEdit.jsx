@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase.js';
+import '../styles/QuizEdit.scss';
 
 export default function QuizEdit() {
     const { id } = useParams(); // docId z Firestore
@@ -132,19 +133,23 @@ export default function QuizEdit() {
     };
 
     return (
-        <div>
+        <div className="quiz-edit">
             <h1>Edytuj quiz</h1>
             <form onSubmit={handleSubmit}>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tytuł" required />
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Opis" required />
-                <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Kategoria" />
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tytuł"
+                       required/>
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Opis"
+                          required/>
+                <input type="text" value={category} onChange={(e) => setCategory(e.target.value)}
+                       placeholder="Kategoria"/>
                 <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                     <option value="easy">Łatwy</option>
                     <option value="medium">Średni</option>
                     <option value="hard">Trudny</option>
                 </select>
-                <input type="number" value={timeLimit} onChange={(e) => setTimeLimit(Number(e.target.value))} />
-                <input type="text" value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="Link do okładki" />
+                <input type="number" value={timeLimit} onChange={(e) => setTimeLimit(Number(e.target.value))}/>
+                <input type="text" value={coverImage} onChange={(e) => setCoverImage(e.target.value)}
+                       placeholder="Link do okładki"/>
 
                 <ul>
                     {questions.map((q, idx) => (

@@ -1,0 +1,61 @@
+.duel-room {
+  padding: 2rem;
+  color: #fff;
+
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    background-color: #2e2e2e;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: #facc15;
+  }
+
+  .quiz-start {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #1e40af;
+    }
+  }
+
+  .results {
+    margin-top: 1.5rem;
+    background-color: #1f1f1f;
+    padding: 1rem;
+    border-radius: 8px;
+
+    p {
+      margin-bottom: 0.5rem;
+    }
+
+    strong {
+      color: #38bdf8;
+    }
+  }
+}

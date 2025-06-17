@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import '../styles/QuizRandom.scss';
 
 export default function QuizRandom() {
     const [category, setCategory] = useState('');
@@ -42,10 +43,10 @@ export default function QuizRandom() {
     };
 
     return (
-        <div>
+        <div className="quiz-random">
             <h1>🎲 Losuj quiz</h1>
 
-            <div>
+            <div className="filters">
                 <input
                     type="text"
                     placeholder="Kategoria (np. Historia)"

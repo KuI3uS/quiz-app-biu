@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import CreateDuel from '../duel/CreateDuel';
+import '../styles/Quiz.scss';
 
 export default function Quiz() {
     const { id } = useParams();
@@ -29,15 +30,15 @@ export default function Quiz() {
     if (!quiz) return <p>⏳ Ładowanie quizu...</p>;
 
     return (
-        <div className="p-4 max-w-xl mx-auto">
+        <div className="quiz-details">
             <h1 className="text-3xl font-bold mb-2">{quiz.title}</h1>
-            <p className="mb-4 text-gray-700">{quiz.description}</p>
+            <p>{quiz.description}</p>
 
-            <div className="mb-4 text-sm text-gray-500">
+            <div className="meta">
                 Kategoria: {quiz.category || 'brak'} | Poziom: {quiz.difficulty || 'brak'}
             </div>
 
-            <div className="flex gap-4 mt-6">
+            <div className="actions">
                 <button
                     onClick={() => navigate(`/quiz/${quiz.id}`)}
                     className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
@@ -46,7 +47,7 @@ export default function Quiz() {
                 </button>
 
                 {user && (
-                    <CreateDuel quizId={quiz.id} />
+                    <CreateDuel quizId={quiz.id}/>
                 )}
             </div>
         </div>

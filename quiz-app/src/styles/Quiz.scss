@@ -1,0 +1,45 @@
+.quiz-details {
+  padding: 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+  color: #fff;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+  }
+
+  .meta {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #1e40af;
+      }
+    }
+  }
+}

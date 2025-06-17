@@ -1,0 +1,39 @@
+.leaderboard {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: #fff;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fbbf24; // złoty
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    margin: 0;
+
+    li {
+      font-size: 1.1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #333;
+
+      &:nth-child(1) {
+        color: #ffd700; // złoty
+        font-weight: bold;
+      }
+
+      &:nth-child(2) {
+        color: #c0c0c0; // srebrny
+        font-weight: bold;
+      }
+
+      &:nth-child(3) {
+        color: #cd7f32; // brązowy
+        font-weight: bold;
+      }
+    }
+  }
+}

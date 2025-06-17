@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { doc, onSnapshot, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+import '../styles/DuelRoom.scss';
 
 export default function DuelRoom() {
     const { id } = useParams(); // id pojedynku
@@ -52,7 +53,7 @@ export default function DuelRoom() {
 
     if (duel.status === 'waiting') {
         return (
-            <div className="p-4">
+            <div className="duel-room p-4">
                 <h2>🕓 Oczekiwanie na przeciwnika...</h2>
                 <p>Udostępnij ten link drugiemu graczowi:</p>
                 <code>{window.location.href}</code>
@@ -67,7 +68,7 @@ export default function DuelRoom() {
 
         if (!bothFinished) {
             return (
-                <div className="p-4">
+                <div className="duel-room p-4">
                     <h2>👊 Pojedynek rozpoczęty!</h2>
                     <h3 className="text-lg font-bold mb-2">Quiz: {quiz.title}</h3>
                     <p className="mb-4">{quiz.description}</p>
@@ -75,7 +76,7 @@ export default function DuelRoom() {
                         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
                         onClick={() =>
                             navigate(`/quiz/${quiz.docId}`, {
-                                state: { duelId: id }
+                                state: {duelId: id}
                             })
                         }
                     >
@@ -87,7 +88,7 @@ export default function DuelRoom() {
         } else if (!opponentResult) {
             // Gracz już zrobił quiz, czeka na przeciwnika
             return (
-                <div className="p-4">
+                <div className="duel-room p-4">
                     <h2>✅ Ukończyłeś quiz!</h2>
                     <p>⏳ Czekamy, aż przeciwnik ukończy swój quiz...</p>
                 </div>
@@ -95,11 +96,15 @@ export default function DuelRoom() {
         } else {
             // Obaj gracze ukończyli
             return (
-                <div className="p-4">
+                <div className="duel-room p-4">
                     <h2>🏁 Pojedynek zakończony!</h2>
-                    <div className="mt-4">
-                        <p><strong>{userResult.displayName || 'Gracz Ty'}:</strong> {userResult.score} / {userResult.total}</p>
-                        <p><strong>{opponentResult.displayName || 'Przeciwnik'}:</strong> {opponentResult.score} / {opponentResult.total}</p>
+                    <div className="duel-room p-4">
+                        <p>
+                            <strong>{userResult.displayName || 'Gracz Ty'}:</strong> {userResult.score} / {userResult.total}
+                        </p>
+                        <p>
+                            <strong>{opponentResult.displayName || 'Przeciwnik'}:</strong> {opponentResult.score} / {opponentResult.total}
+                        </p>
                     </div>
                 </div>
             );

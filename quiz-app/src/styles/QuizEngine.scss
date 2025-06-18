@@ -1,8 +1,42 @@
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --text-muted: #444;
+  --accent: #4f46e5;
+  --accent-hover: #3730a3;
+  --answer-bg: #e5e7eb;
+  --answer-hover: #d1d5db;
+  --timer-color: #b45309;
+  --result-green: #16a34a;
+  --certificate: #10b981;
+  --certificate-hover: #059669;
+  --share-bg: #cbd5e1;
+  --share-hover: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --text: #f1f1f1;
+    --text-muted: #ccc;
+    --accent: #4f46e5;
+    --accent-hover: #3730a3;
+    --answer-bg: #2a2a2a;
+    --answer-hover: #3b3b3b;
+    --timer-color: #facc15;
+    --result-green: #4ade80;
+    --certificate: #10b981;
+    --certificate-hover: #059669;
+    --share-bg: #334155;
+    --share-hover: #1e293b;
+  }
+}
+
 .quiz-engine {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  color: #fff;
+  color: var(--text);
 
   h1 {
     text-align: center;
@@ -25,7 +59,7 @@
   .timer {
     text-align: center;
     font-size: 1rem;
-    color: #facc15;
+    color: var(--timer-color);
     margin-bottom: 1rem;
   }
 
@@ -44,13 +78,13 @@
         border: none;
         border-radius: 6px;
         font-size: 1rem;
-        background-color: #2a2a2a;
-        color: #fff;
+        background-color: var(--answer-bg);
+        color: var(--text);
         cursor: pointer;
         transition: background-color 0.3s;
 
         &:hover:not(:disabled) {
-          background-color: #3b3b3b;
+          background-color: var(--answer-hover);
         }
       }
 
@@ -61,7 +95,7 @@
       }
 
       input[type="checkbox"] {
-        accent-color: #4f46e5;
+        accent-color: var(--accent);
       }
     }
   }
@@ -71,18 +105,18 @@
     margin-top: 1rem;
     padding: 0.6rem 1.2rem;
     font-size: 1rem;
-    background-color: #4f46e5;
+    background-color: var(--accent);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 
     &:hover {
-      background-color: #3730a3;
+      background-color: var(--accent-hover);
     }
 
     &:disabled {
-      background-color: #555;
+      background-color: #999;
       cursor: not-allowed;
     }
   }
@@ -91,14 +125,14 @@
     width: 100%;
     padding: 0.6rem;
     border-radius: 4px;
-    border: 1px solid #444;
-    background-color: #2a2a2a;
-    color: #fff;
+    border: 1px solid var(--text-muted);
+    background-color: var(--answer-bg);
+    color: var(--text);
     margin-bottom: 1rem;
 
     &:focus {
       outline: none;
-      border-color: #4f46e5;
+      border-color: var(--accent);
     }
   }
 
@@ -109,22 +143,22 @@
     h2 {
       font-size: 1.6rem;
       margin-bottom: 0.5rem;
-      color: #4ade80;
+      color: var(--result-green);
     }
 
     p {
       font-size: 1rem;
-      color: #ccc;
+      color: var(--text-muted);
     }
 
     .certificate {
       margin-top: 1rem;
 
       button {
-        background-color: #10b981;
+        background-color: var(--certificate);
 
         &:hover {
-          background-color: #059669;
+          background-color: var(--certificate-hover);
         }
       }
 
@@ -144,13 +178,13 @@
       a {
         margin: 0.5rem 0;
         padding: 0.5rem 1rem;
-        background-color: #334155;
-        color: white;
+        background-color: var(--share-bg);
+        color: var(--text);
         border-radius: 4px;
         text-decoration: none;
 
         &:hover {
-          background-color: #1e293b;
+          background-color: var(--share-hover);
         }
       }
     }

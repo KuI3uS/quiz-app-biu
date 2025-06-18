@@ -1,18 +1,46 @@
+:root {
+  --text: #111;
+  --text-muted: #555;
+  --highlight: #d97706;
+  --list-bg: #f3f4f6;
+  --list-text: #1f2937;
+  --action-bg: #e5e7eb;
+  --action-hover: #d1d5db;
+  --action-delete: #dc2626;
+  --action-delete-hover: #b91c1c;
+  --link-color: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #fff;
+    --text-muted: #ccc;
+    --highlight: #facc15;
+    --list-bg: #1e1e1e;
+    --list-text: #93c5fd;
+    --action-bg: #334155;
+    --action-hover: #1e293b;
+    --action-delete: #dc2626;
+    --action-delete-hover: #b91c1c;
+    --link-color: #93c5fd;
+  }
+}
+
 .quiz-list {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
-  color: #fff;
+  color: var(--text);
 
   h1 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    color: #facc15;
+    color: var(--highlight);
   }
 
   p {
     font-size: 1rem;
-    color: #ccc;
+    color: var(--text-muted);
     margin-bottom: 1rem;
   }
 
@@ -21,15 +49,15 @@
     padding-left: 0;
 
     li {
-      background-color: #1e1e1e;
+      background-color: var(--list-bg);
       padding: 1rem;
       margin-bottom: 1rem;
       border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
       strong {
         font-size: 1.1rem;
-        color: #93c5fd;
+        color: var(--list-text);
       }
 
       .quiz-actions {
@@ -40,8 +68,8 @@
 
         a,
         button {
-          background-color: #334155;
-          color: white;
+          background-color: var(--action-bg);
+          color: var(--text);
           border: none;
           padding: 0.4rem 0.75rem;
           border-radius: 4px;
@@ -51,15 +79,15 @@
           transition: background-color 0.3s;
 
           &:hover {
-            background-color: #1e293b;
+            background-color: var(--action-hover);
           }
         }
 
         button.delete {
-          background-color: #dc2626;
+          background-color: var(--action-delete);
 
           &:hover {
-            background-color: #b91c1c;
+            background-color: var(--action-delete-hover);
           }
         }
       }

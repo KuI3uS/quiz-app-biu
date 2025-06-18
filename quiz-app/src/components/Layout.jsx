@@ -35,7 +35,6 @@ export default function Layout() {
                 <Link to="/search">🔍 Szukaj quizów</Link>
                 <Link to="/quiz/create">Stwórz quiz</Link>
                 <Link to="/quiz/list">Moje quizy</Link>
-                <Link to="/about">About</Link>
                 <Link to="/register">Zarejestruj się</Link>
                 <Link to="/leaderboard">Ranking</Link>
                 <Link to="/badges">Odznaki</Link>

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/DuelRoom.scss';
 
 export default function DuelRoom() {
-    const { id } = useParams(); // id pojedynku
+    const { id } = useParams(); // ID pojedynku
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -14,6 +14,7 @@ export default function DuelRoom() {
     const [quiz, setQuiz] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Subskrybuj pojedynek
     useEffect(() => {
         if (!user) return;
 
@@ -29,27 +30,32 @@ export default function DuelRoom() {
                 });
             }
 
-            // Pobierz quiz jeśli jeszcze nie jest pobrany
-            if (data?.quizId && !quiz) {
-                const quizSnap = await getDoc(doc(db, 'quizzes', data.quizId));
-                if (quizSnap.exists()) {
-                    setQuiz({ docId: quizSnap.id, ...quizSnap.data() });
-                }
-            }
-
             setLoading(false);
         });
 
         return () => unsub();
-    }, [id, user, quiz]);
+    }, [id, user]);
 
-    if (loading || !duel) return <p>⏳ Ładowanie pojedynku...</p>;
+    // Pobierz quiz jeśli trzeba
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            if (duel?.quizId && !quiz) {
+                const quizSnap = await getDoc(doc(db, 'quizzes', duel.quizId));
+                if (quizSnap.exists()) {
+                    setQuiz({ docId: quizSnap.id, ...quizSnap.data() });
+                }
+            }
+        };
 
-    const userResult = duel?.results?.[user.uid];
+        fetchQuiz();
+    }, [duel, quiz]);
+
+    if (loading || !duel || !duel.status) return <p>⏳ Ładowanie pojedynku...</p>;
+
+    const results = duel.results || {};
+    const userResult = results[user.uid];
     const opponentUid = user.uid === duel.hostUid ? duel.guestUid : duel.hostUid;
-    const opponentResult = duel?.results?.[opponentUid];
-
-    const bothFinished = userResult && opponentResult;
+    const opponentResult = results[opponentUid];
 
     if (duel.status === 'waiting') {
         return (
@@ -61,10 +67,14 @@ export default function DuelRoom() {
         );
     }
 
-    if (duel.status === 'started' && quiz) {
-        const host = duel.results?.[duel.hostUid];
-        const guest = duel.results?.[duel.guestUid];
-        const bothFinished = host && guest;
+    if (duel.status === 'started') {
+        if (!quiz) {
+            return <p>⏳ Ładowanie quizu...</p>;
+        }
+
+        const hostFinished = results[duel.hostUid];
+        const guestFinished = results[duel.guestUid];
+        const bothFinished = hostFinished && guestFinished;
 
         if (!bothFinished) {
             return (
@@ -76,7 +86,7 @@ export default function DuelRoom() {
                         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
                         onClick={() =>
                             navigate(`/quiz/${quiz.docId}`, {
-                                state: {duelId: id}
+                                state: { duelId: id },
                             })
                         }
                     >
@@ -86,7 +96,6 @@ export default function DuelRoom() {
                 </div>
             );
         } else if (!opponentResult) {
-            // Gracz już zrobił quiz, czeka na przeciwnika
             return (
                 <div className="duel-room p-4">
                     <h2>✅ Ukończyłeś quiz!</h2>
@@ -94,16 +103,15 @@ export default function DuelRoom() {
                 </div>
             );
         } else {
-            // Obaj gracze ukończyli
             return (
                 <div className="duel-room p-4">
                     <h2>🏁 Pojedynek zakończony!</h2>
                     <div className="duel-room p-4">
                         <p>
-                            <strong>{userResult.displayName || 'Gracz Ty'}:</strong> {userResult.score} / {userResult.total}
+                            <strong>{userResult?.displayName || 'Gracz Ty'}:</strong> {userResult?.score} / {userResult?.total}
                         </p>
                         <p>
-                            <strong>{opponentResult.displayName || 'Przeciwnik'}:</strong> {opponentResult.score} / {opponentResult.total}
+                            <strong>{opponentResult?.displayName || 'Przeciwnik'}:</strong> {opponentResult?.score} / {opponentResult?.total}
                         </p>
                     </div>
                 </div>

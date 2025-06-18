@@ -1,3 +1,33 @@
+:root {
+  --color-primary: #3b82f6;
+  --color-heading: #1d4ed8;
+  --color-input-bg: #f9fafb;
+  --color-input-text: #111827;
+  --color-input-border: #cbd5e1;
+  --color-result-bg: #f3f4f6;
+  --color-result-border: #e5e7eb;
+  --color-result-text: #1f2937;
+  --color-description: #4b5563;
+  --color-muted: #6b7280;
+  --color-danger: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #3b82f6;
+    --color-heading: #60a5fa;
+    --color-input-bg: #1f1f1f;
+    --color-input-text: #f1f1f1;
+    --color-input-border: #444;
+    --color-result-bg: #111;
+    --color-result-border: #333;
+    --color-result-text: #fff;
+    --color-description: #bbb;
+    --color-muted: #888;
+    --color-danger: #f87171;
+  }
+}
+
 .search-quizzes {
   max-width: 800px;
   margin: 0 auto;
@@ -6,7 +36,7 @@
   h1 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    color: #60a5fa;
+    color: var(--color-heading);
   }
 
   input,
@@ -14,14 +44,14 @@
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #444;
+    border: 1px solid var(--color-input-border);
     border-radius: 6px;
-    background-color: #1f1f1f;
-    color: #f1f1f1;
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
     font-size: 1rem;
 
     &:focus {
-      border-color: #4f46e5;
+      border-color: var(--color-primary);
       outline: none;
     }
   }
@@ -32,14 +62,14 @@
 
     li {
       padding: 1rem;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--color-result-border);
       margin-bottom: 0.5rem;
-      background-color: #111;
+      background-color: var(--color-result-bg);
       border-radius: 6px;
 
       a {
         font-size: 1.2rem;
-        color: #3b82f6;
+        color: var(--color-primary);
         text-decoration: none;
 
         &:hover {
@@ -49,18 +79,18 @@
 
       p {
         margin: 0.25rem 0;
-        color: #bbb;
+        color: var(--color-description);
       }
 
       .text-xs {
         font-size: 0.8rem;
-        color: #888;
+        color: var(--color-muted);
       }
 
       button {
         background: none;
         border: none;
-        color: #f87171;
+        color: var(--color-danger);
         font-size: 0.9rem;
         cursor: pointer;
 

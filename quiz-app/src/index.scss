@@ -1,31 +1,28 @@
+// 🎨 Zmienne kolorystyczne
 $font-color-dark: rgba(255, 255, 255, 0.87);
 $font-color-light: #213547;
 $bg-dark: #242424;
 $bg-light: #ffffff;
 $link-color: #646cff;
 $link-hover: #535bf2;
+$link-hover-light: #747bff;
+$btn-bg-dark: #1a1a1a;
+$btn-bg-light: #f9f9f9;
 
+// 🌍 Globalne style
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
+
   color: $font-color-dark;
   background-color: $bg-dark;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: $link-color;
-  text-decoration: inherit;
-
-  &:hover {
-    color: $link-hover;
-  }
 }
 
 body {
@@ -34,6 +31,18 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: inherit;
+  color: inherit;
+}
+
+a {
+  font-weight: 500;
+  color: $link-color;
+  text-decoration: none;
+
+  &:hover {
+    color: $link-hover;
+  }
 }
 
 h1 {
@@ -48,7 +57,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: $btn-bg-dark;
   cursor: pointer;
   transition: border-color 0.25s;
 
@@ -62,6 +71,7 @@ button {
   }
 }
 
+// ☀️ Jasny motyw
 @media (prefers-color-scheme: light) {
   :root {
     color: $font-color-light;
@@ -69,10 +79,10 @@ button {
   }
 
   a:hover {
-    color: #747bff;
+    color: $link-hover-light;
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: $btn-bg-light;
   }
 }

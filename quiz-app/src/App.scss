@@ -1,11 +1,34 @@
-$shadow-color: #646cffaa;
-$react-shadow: #61dafbaa;
+$shadow-color-light: #646cffaa;
+$react-shadow-light: #61dafbaa;
+
+$shadow-color-dark: #8ab4f8aa;
+$react-shadow-dark: #80cbc4aa;
+
+:root {
+  --text-color: #111;
+  --card-bg: #fff;
+  --read-docs: #666;
+  --shadow-color: #{$shadow-color-light};
+  --react-shadow: #{$react-shadow-light};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #f1f5f9;
+    --card-bg: #1e1e1e;
+    --read-docs: #aaa;
+    --shadow-color: #{$shadow-color-dark};
+    --react-shadow: #{$react-shadow-dark};
+  }
+}
 
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  color: var(--text-color);
+  background-color: var(--card-bg);
 }
 
 .logo {
@@ -15,11 +38,11 @@ $react-shadow: #61dafbaa;
   transition: filter 300ms;
 
   &:hover {
-    filter: drop-shadow(0 0 2em $shadow-color);
+    filter: drop-shadow(0 0 2em var(--shadow-color));
   }
 
   &.react:hover {
-    filter: drop-shadow(0 0 2em $react-shadow);
+    filter: drop-shadow(0 0 2em var(--react-shadow));
   }
 }
 
@@ -40,8 +63,11 @@ $react-shadow: #61dafbaa;
 
 .card {
   padding: 2em;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--read-docs);
 }

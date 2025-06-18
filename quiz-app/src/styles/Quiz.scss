@@ -1,24 +1,48 @@
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+  --button-bg: #2563eb;
+  --button-bg-hover: #1e40af;
+  --button-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --text: #f1f1f1;
+    --text-muted: #d1d5db;
+    --text-subtle: #9ca3af;
+    --button-bg: #2563eb;
+    --button-bg-hover: #1e40af;
+    --button-text: #ffffff;
+  }
+}
+
 .quiz-details {
+  background-color: var(--bg);
+  color: var(--text);
   padding: 2rem;
   max-width: 720px;
   margin: 0 auto;
-  color: #fff;
 
   h1 {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    color: var(--text);
   }
 
   p {
     font-size: 1rem;
-    color: #d1d5db;
+    color: var(--text-muted);
     margin-bottom: 1rem;
   }
 
   .meta {
     font-size: 0.9rem;
-    color: #9ca3af;
+    color: var(--text-subtle);
     margin-bottom: 1.5rem;
   }
 
@@ -30,15 +54,15 @@
     button {
       padding: 0.6rem 1.2rem;
       font-size: 1rem;
-      background-color: #2563eb;
-      color: white;
+      background-color: var(--button-bg);
+      color: var(--button-text);
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #1e40af;
+        background-color: var(--button-bg-hover);
       }
     }
   }

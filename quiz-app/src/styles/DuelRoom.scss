@@ -1,6 +1,31 @@
+:root {
+  --duel-bg: #ffffff;
+  --duel-text: #111827;
+  --duel-code-bg: #f3f4f6;
+  --duel-code-color: #ca8a04;
+  --duel-btn-bg: #2563eb;
+  --duel-btn-hover: #1e40af;
+  --duel-result-bg: #f9fafb;
+  --duel-result-highlight: #0284c7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --duel-bg: #1e1e1e;
+    --duel-text: #ffffff;
+    --duel-code-bg: #2e2e2e;
+    --duel-code-color: #facc15;
+    --duel-btn-bg: #2563eb;
+    --duel-btn-hover: #1e40af;
+    --duel-result-bg: #1f1f1f;
+    --duel-result-highlight: #38bdf8;
+  }
+}
+
 .duel-room {
   padding: 2rem;
-  color: #fff;
+  color: var(--duel-text);
+  background-color: var(--duel-bg);
 
   h2 {
     font-size: 1.6rem;
@@ -19,17 +44,17 @@
   }
 
   code {
-    background-color: #2e2e2e;
+    background-color: var(--duel-code-bg);
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
     display: inline-block;
     font-family: monospace;
     font-size: 0.95rem;
-    color: #facc15;
+    color: var(--duel-code-color);
   }
 
   .quiz-start {
-    background-color: #2563eb;
+    background-color: var(--duel-btn-bg);
     color: white;
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
@@ -40,13 +65,13 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #1e40af;
+      background-color: var(--duel-btn-hover);
     }
   }
 
   .results {
     margin-top: 1.5rem;
-    background-color: #1f1f1f;
+    background-color: var(--duel-result-bg);
     padding: 1rem;
     border-radius: 8px;
 
@@ -55,7 +80,7 @@
     }
 
     strong {
-      color: #38bdf8;
+      color: var(--duel-result-highlight);
     }
   }
 }

@@ -17,7 +17,7 @@ export default function CreateDuel({ quizId }) {
                 guestUid: null,
                 status: 'waiting',
                 createdAt: serverTimestamp(),
-                results: {}, // ← TO BYŁO WYMAGANE
+                results: {},
             });
 
             navigate(`/duel/${docRef.id}`);

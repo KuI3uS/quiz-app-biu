@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { auth, googleProvider, facebookProvider } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
@@ -17,7 +17,7 @@ export default function Login() {
                 return;
             }
             alert('Zalogowano!');
-            navigate('/quiz');
+            navigate('/');
         } catch (err) {
             alert('Błąd logowania: ' + err.message);
         }
@@ -25,12 +25,21 @@ export default function Login() {
 
     const handleGoogleLogin = async () => {
         try {
-            const result = await signInWithPopup(auth, googleProvider);
-            // Google loginy są domyślnie zweryfikowane
+            await signInWithPopup(auth, googleProvider);
             alert('Zalogowano przez Google!');
-            navigate('/quiz');
+            navigate('/');
         } catch (err) {
             alert('Błąd Google: ' + err.message);
+        }
+    };
+
+    const handleFacebookLogin = async () => {
+        try {
+            await signInWithPopup(auth, facebookProvider);
+            alert('Zalogowano przez Facebook!');
+            navigate('/');
+        } catch (err) {
+            alert('Błąd Facebook: ' + err.message);
         }
     };
 
@@ -44,6 +53,7 @@ export default function Login() {
                 <a href="/forgot-password">Zapomniałeś hasła?</a>
             </p>
             <button onClick={handleGoogleLogin}>Zaloguj przez Google</button>
+            <button onClick={handleFacebookLogin}>Zaloguj przez Facebook</button>
         </div>
     );
 }

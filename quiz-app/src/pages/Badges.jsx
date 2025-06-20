@@ -25,8 +25,8 @@ export default function Badges() {
         <div className="badges">
             <h2>🎖️ Twoje odznaki</h2>
             <ul>
-                <li>✅ Ukończone quizy: {completed}</li>
-                <li>🏅 100% wynik: {perfect}</li>
+                <li>Ukończone quizy: {completed}</li>
+                <li>100% wynik: {perfect}</li>
             </ul>
         </div>
     );

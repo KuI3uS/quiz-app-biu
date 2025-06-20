@@ -17,7 +17,6 @@ export default function SearchQuizzes() {
 
     const { user } = useAuth();
 
-    // 🔄 Pobierz wszystkie quizy
     useEffect(() => {
         const fetchQuizzes = async () => {
             const snapshot = await getDocs(collection(db, 'quizzes'));
@@ -27,7 +26,6 @@ export default function SearchQuizzes() {
         fetchQuizzes();
     }, []);
 
-    // ❤️ Pobierz ulubione quizy użytkownika
     useEffect(() => {
         const fetchFavorites = async () => {
             if (!user) return;
@@ -39,7 +37,6 @@ export default function SearchQuizzes() {
         fetchFavorites();
     }, [user]);
 
-    // 🔍 Filtrowanie quizów
     useEffect(() => {
         const lowered = searchTerm.toLowerCase();
         const results = quizzes.filter((quiz) => {

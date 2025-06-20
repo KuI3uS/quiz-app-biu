@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useEffect, useState } from 'react';
-import CreateDuel from '../duel/CreateDuel'; // ← prawdziwy komponent
+import CreateDuel from '../duel/CreateDuel';
 
 export default function QuizInfo() {
     const { id } = useParams();

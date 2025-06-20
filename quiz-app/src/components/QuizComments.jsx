@@ -16,7 +16,7 @@ export default function QuizComments({ quizId }) {
             const snapshot = await getDocs(q);
             const ratings = snapshot.docs.map(doc => doc.data().rating);
             const avg = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
-            setAverageRating(avg.toFixed(1));
+            (avg.toFixed(1));
         };
         fetchAverageRating();
     }, [quizId]);

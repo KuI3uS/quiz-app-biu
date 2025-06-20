@@ -13,6 +13,6 @@ export default function ConfirmModal({ isOpen, message, onConfirm, onCancel }) {
                 </div>
             </div>
         </div>,
-        document.getElementById('modal-root') // 👈 konieczny element w HTML
+        document.getElementById('modal-root')
     );
 }

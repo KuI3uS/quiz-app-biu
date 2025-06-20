@@ -19,7 +19,7 @@ export default function Layout() {
     return (
         <div className="layout">
             <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                {/* 🔍 Globalna wyszukiwarka */}
+                {/* Globalna wyszukiwarka */}
                 <form onSubmit={handleSearch} style={{ display: 'inline-flex', gap: '0.5rem' }}>
                     <input
                         type="text"
@@ -31,14 +31,14 @@ export default function Layout() {
                     <button type="submit">🔍</button>
                 </form>
                 <Link to="/">Home</Link>
-                <Link to="/random">🎲 Losowy quiz</Link>
-                <Link to="/search">🔍 Szukaj quizów</Link>
+                <Link to="/random">Losowy quiz</Link>
+                <Link to="/search">Szukaj quizów</Link>
                 <Link to="/quiz/create">Stwórz quiz</Link>
                 <Link to="/quiz/list">Moje quizy</Link>
-                <Link to="/register">Zarejestruj się</Link>
+                {!user && <Link to="/register">Zarejestruj się</Link>}
                 <Link to="/leaderboard">Ranking</Link>
                 <Link to="/badges">Odznaki</Link>
-                {user && <Link to="/dashboard">👤 Panel użytkownika</Link>}
+                {user && <Link to="/dashboard">Panel użytkownika</Link>}
                 {user ? (
                     <>
                         <span>Zalogowany jako: {user.email}</span>

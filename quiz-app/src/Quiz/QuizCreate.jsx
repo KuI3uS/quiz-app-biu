@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { db } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -143,7 +145,7 @@ export default function QuizCreate() {
     };
 
     return (
-        <div className="quiz-create">
+        <div className="quiz-create" style={{maxWidth: 700, margin: '0 auto'}}>
             <h1>Stwórz nowy quiz</h1>
             <form onSubmit={handleSubmit}>
                 <input type="text" placeholder="Tytuł" value={title} onChange={(e) => setTitle(e.target.value)}
@@ -159,12 +161,19 @@ export default function QuizCreate() {
                 </select>
                 <input type="number" placeholder="Czas (sekundy)" value={timeLimit}
                        onChange={(e) => setTimeLimit(Number(e.target.value))}/>
-                <input type="text" placeholder="Link do okładki" value={coverImage}
+                <input type="text" placeholder="Link do obrazu" value={coverImage}
                        onChange={(e) => setCoverImage(e.target.value)}/>
 
+                {coverImage && (
+                    <div style={{marginTop: 'center'}}>
+                        <img src={coverImage} alt="Podglad obrazu" style={{maxWidth: '300px'}}/>
+                    </div>
+                )}
+
                 <h2>Dodaj pytanie</h2>
-                <input type="text" placeholder="Treść pytania" value={questionText}
-                       onChange={(e) => setQuestionText(e.target.value)}/>
+                <div style={{marginBottom: '1rem'}}>
+                    <ReactQuill theme="snow" value={questionText} onChange={setQuestionText}/>
+                </div>
                 <select value={questionType} onChange={(e) => {
                     const type = e.target.value;
                     setQuestionType(type);

@@ -1,5 +1,5 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -188,7 +188,12 @@ export default function QuizEngine() {
                 <motion.div key={currentQuestion} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}
                             transition={{duration: 0.3}}>
                     <h3 className="text-lg font-semibold mb-2">Pytanie {currentQuestion + 1} z {quiz.questions.length}</h3>
-                    <p className="mb-4">{q.text}</p>
+                    <div className="mb-4" dangerouslySetInnerHTML={{__html: q.text}}/>
+                    {q.imageUrl && (
+                        <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+                            <img src={q.imageUrl} alt="Obraz pytania" style={{ maxWidth: '300px', borderRadius: '8px' }} />
+                        </div>
+                    )}
                 </motion.div>
             </AnimatePresence>
 
@@ -262,7 +267,7 @@ export default function QuizEngine() {
 
             {q.type === 'boolean' && (
                 <div>
-                    {['Prawda', 'Fałsz'].map((label, idx) => {
+                    {['Prawda', 'Fałsz'].map((label) => {
                         const val = label === 'Prawda';
                         return (
                             <button

@@ -8,7 +8,6 @@ import QuizCreate from './Quiz/QuizCreate.jsx';
 import QuizEngine from './Quiz/QuizEngine.jsx';
 import QuizList from './Quiz/QuizList.jsx';
 import QuizEdit from './Quiz/QuizEdit.jsx';
-import ResetPassword from './pages/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword';
 import UserDashboard from "./user/UserDashboard.jsx";
 import QuizRandom from "./Quiz/QuizRandom.jsx";
@@ -32,7 +31,6 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                     <Route path="quiz/edit/:id" element={<QuizEdit />} />
-                    <Route path="reset" element={<ResetPassword />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/dashboard" element={<UserDashboard />} />
                     <Route path="/random" element={<QuizRandom />} />
@@ -53,6 +51,7 @@ function App() {
                             </RequireAuth>
                         }
                     />
+
                     <Route
                         path="quiz/create"
                         element={

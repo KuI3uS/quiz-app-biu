@@ -44,7 +44,7 @@ export default function UserDashboard() {
         ? (results.reduce((sum, r) => sum + r.score / r.total, 0) / results.length * 100).toFixed(1)
         : 'Brak danych';
 
-    // 🔢 Oblicz skuteczność według kategorii
+    // skuteczność według kategorii
     const categoryStats = [];
     const categoriesMap = {};
 
@@ -70,17 +70,17 @@ export default function UserDashboard() {
 
     return (
         <div className="p-4 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">👤 Panel użytkownika</h1>
+            <h1 className="text-3xl font-bold mb-6">Panel użytkownika</h1>
 
             <section className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">📊 Statystyki</h2>
+                <h2 className="text-xl font-semibold mb-2">Statystyki</h2>
                 <p>Liczba rozwiązanych quizów: {results.length}</p>
                 <p>Średni wynik: {avgScore}%</p>
                 <p>Liczba stworzonych quizów: {quizzes.length}</p>
             </section>
 
             <section className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">📝 Moje quizy</h2>
+                <h2 className="text-xl font-semibold mb-2">Moje quizy</h2>
                 <ul>
                     {quizzes.map((quiz) => (
                         <li key={quiz.id}>
@@ -97,27 +97,51 @@ export default function UserDashboard() {
             </section>
 
             <section className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">📈 Moje wyniki</h2>
+                <h2 className="text-xl font-semibold mb-2">Moje wyniki</h2>
                 <ul>
                     {results.map((res, idx) => (
                         <li key={idx}>
-                            Quiz ID: {res.quizId} – {res.score} / {res.total} ({((res.score / res.total) * 100).toFixed(0)}%)
+                            Quiz
+                            ID: {res.quizId} – {res.score} / {res.total} ({((res.score / res.total) * 100).toFixed(0)}%)
                         </li>
                     ))}
                 </ul>
             </section>
+            <section className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Mocne i słabe strony</h2>
+                {categoryStats.length === 0 ? (
+                    <p>Brak danych do analizy.</p>
+                ) : (
+                    <>
+                        <p className="mb-2">
+                            <strong>Mocne strony:</strong>{' '}
+                            {categoryStats
+                                .filter((cat) => cat.accuracy >= 70)
+                                .map((cat) => cat.category)
+                                .join(', ') || 'brak'}
+                        </p>
+                        <p>
+                            <strong>Słabe strony:</strong>{' '}
+                            {categoryStats
+                                .filter((cat) => cat.accuracy < 70)
+                                .map((cat) => cat.category)
+                                .join(', ') || 'brak'}
+                        </p>
+                    </>
+                )}
+            </section>
 
             <section>
-                <h2 className="text-xl font-semibold mb-2">📉 Skuteczność według kategorii</h2>
+                <h2 className="text-xl font-semibold mb-2">Skuteczność według kategorii</h2>
                 {categoryStats.length === 0 ? (
                     <p>Brak danych do wyświetlenia wykresu.</p>
                 ) : (
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={categoryStats}>
-                            <XAxis dataKey="category" />
-                            <YAxis domain={[0, 100]} />
-                            <Tooltip />
-                            <Bar dataKey="accuracy" fill="#82ca9d" />
+                            <XAxis dataKey="category"/>
+                            <YAxis domain={[0, 100]}/>
+                            <Tooltip/>
+                            <Bar dataKey="accuracy" fill="#82ca9d"/>
                         </BarChart>
                     </ResponsiveContainer>
                 )}

@@ -36,7 +36,6 @@ export default function DuelRoom() {
         return () => unsub();
     }, [id, user]);
 
-    // Pobierz quiz jeśli trzeba
     useEffect(() => {
         const fetchQuiz = async () => {
             if (duel?.quizId && !quiz) {
@@ -60,7 +59,7 @@ export default function DuelRoom() {
     if (duel.status === 'waiting') {
         return (
             <div className="duel-room p-4">
-                <h2>🕓 Oczekiwanie na przeciwnika...</h2>
+                <h2> Oczekiwanie na przeciwnika...</h2>
                 <p>Udostępnij ten link drugiemu graczowi:</p>
                 <code>{window.location.href}</code>
             </div>
@@ -69,7 +68,7 @@ export default function DuelRoom() {
 
     if (duel.status === 'started') {
         if (!quiz) {
-            return <p>⏳ Ładowanie quizu...</p>;
+            return <p> Ładowanie quizu...</p>;
         }
 
         const hostFinished = results[duel.hostUid];
@@ -79,7 +78,7 @@ export default function DuelRoom() {
         if (!bothFinished) {
             return (
                 <div className="duel-room p-4">
-                    <h2>👊 Pojedynek rozpoczęty!</h2>
+                    <h2> Pojedynek rozpoczęty!</h2>
                     <h3 className="text-lg font-bold mb-2">Quiz: {quiz.title}</h3>
                     <p className="mb-4">{quiz.description}</p>
                     <button
@@ -90,7 +89,7 @@ export default function DuelRoom() {
                             })
                         }
                     >
-                        ▶️ Rozpocznij quiz
+                        Rozpocznij quiz
                     </button>
                     <p className="mt-4 text-sm">Po zakończeniu zobaczysz wyniki obydwu graczy.</p>
                 </div>
@@ -98,14 +97,14 @@ export default function DuelRoom() {
         } else if (!opponentResult) {
             return (
                 <div className="duel-room p-4">
-                    <h2>✅ Ukończyłeś quiz!</h2>
-                    <p>⏳ Czekamy, aż przeciwnik ukończy swój quiz...</p>
+                    <h2> Ukończyłeś quiz!</h2>
+                    <p> Czekamy, aż przeciwnik ukończy swój quiz...</p>
                 </div>
             );
         } else {
             return (
                 <div className="duel-room p-4">
-                    <h2>🏁 Pojedynek zakończony!</h2>
+                    <h2> Pojedynek zakończony!</h2>
                     <div className="duel-room p-4">
                         <p>
                             <strong>{userResult?.displayName || 'Gracz Ty'}:</strong> {userResult?.score} / {userResult?.total}
@@ -119,5 +118,5 @@ export default function DuelRoom() {
         }
     }
 
-    return <p>✅ Pojedynek zakończony.</p>;
+    return <p> Pojedynek zakończony.</p>;
 }

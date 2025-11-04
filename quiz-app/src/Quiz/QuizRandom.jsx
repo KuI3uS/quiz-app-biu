@@ -44,7 +44,7 @@ export default function QuizRandom() {
 
     return (
         <div className="quiz-random">
-            <h1>🎲 Losuj quiz</h1>
+            <h1>Losuj quiz</h1>
 
             <div className="filters">
                 <input
@@ -65,8 +65,8 @@ export default function QuizRandom() {
                     value={maxTime}
                     onChange={(e) => setMaxTime(e.target.value)}
                 />
-                <button onClick={fetchQuizzes}>🔍 Filtruj</button>
-                <button onClick={handleRandomPick}>🎯 Wylosuj quiz</button>
+                <button onClick={fetchQuizzes}>Filtruj</button>
+                <button onClick={handleRandomPick}>Wylosuj quiz</button>
             </div>
 
             <p>Znaleziono: {quizzes.length} quizów</p>

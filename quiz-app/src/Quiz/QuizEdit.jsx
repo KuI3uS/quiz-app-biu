@@ -193,8 +193,8 @@ export default function QuizEdit() {
                     {editingIndex !== null ? 'Zapisz pytanie' : 'Dodaj pytanie'}
                 </button>
 
-                <button type="submit">💾 Zapisz zmiany</button>
-                <button type="button" onClick={handleDownload}>📥 Pobierz jako JSON</button>
+                <button type="submit">Zapisz zmiany</button>
+                <button type="button" onClick={handleDownload}>Pobierz jako JSON</button>
             </form>
         </div>
     );

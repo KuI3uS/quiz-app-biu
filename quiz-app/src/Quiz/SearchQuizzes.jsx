@@ -77,7 +77,7 @@ export default function SearchQuizzes() {
 
     return (
         <div className="search-quizzes">
-            <h1 className="text-2xl font-bold mb-4">🔍 Wyszukiwanie quizów</h1>
+            <h1 className="text-2xl font-bold mb-4">Wyszukiwanie quizów</h1>
 
             <input
                 type="text"

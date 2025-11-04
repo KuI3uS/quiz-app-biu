@@ -100,12 +100,12 @@ export default function QuizList() {
                                 <CreateDuel quizId={quiz.docId} />
                             </div>
                             <div className="quiz-actions">
-                                <Link to={`/quiz/${quiz.docId}`}>▶️ Rozwiąż</Link>{' '}
-                                <Link to={`/quiz/edit/${quiz.docId}`}>✏️ Edytuj</Link>{' '}
-                                <button onClick={() => handleDelete(quiz.docId)}>🗑️ Usuń</button>{' '}
-                                <button onClick={() => downloadJson(quiz)}>⬇️ Pobierz JSON</button>{' '}
-                                <button onClick={() => handleCopyLink(quiz.docId)}>🔗 Kopiuj link</button>{' '}
-                                <button onClick={() => handleShareFacebook(quiz.docId)}>📘 Udostępnij na Facebooku</button>
+                                <Link to={`/quiz/${quiz.docId}`}>Rozwiąż</Link>{' '}
+                                <Link to={`/quiz/edit/${quiz.docId}`}> Edytuj</Link>{' '}
+                                <button onClick={() => handleDelete(quiz.docId)}> Usuń</button>{' '}
+                                <button onClick={() => downloadJson(quiz)}>Pobierz JSON</button>{' '}
+                                <button onClick={() => handleCopyLink(quiz.docId)}>Kopiuj link</button>{' '}
+                                <button onClick={() => handleShareFacebook(quiz.docId)}> Udostępnij na Facebooku</button>
                             </div>
                         </li>
                     ))}

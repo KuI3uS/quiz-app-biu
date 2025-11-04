@@ -31,7 +31,7 @@ const app = express();
 const server = new ApolloServer({ typeDefs, resolvers });
 await server.start();
 
-app.use(cors({ origin: 'http://localhost:5174' }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use('/graphql', bodyParser.json(), expressMiddleware(server));
 
 app.listen(4000, () => {

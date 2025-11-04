@@ -32,7 +32,7 @@ export default function CreateDuel({ quizId }) {
             onClick={createDuel}
             className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600"
         >
-            🤝 Rozpocznij pojedynek
+             Rozpocznij pojedynek
         </button>
     );
 }

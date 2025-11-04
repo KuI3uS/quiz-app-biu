@@ -248,8 +248,8 @@ export default function QuizCreate() {
                     {questions.map((q, idx) => (
                         <li key={idx}>
                             {q.text} ({q.type}) – {q.answers?.length || 0} odp.
-                            <button type="button" onClick={() => handleEditQuestion(idx)}>✏️</button>
-                            <button type="button" onClick={() => handleDeleteQuestion(idx)}>🗑️</button>
+                            <button type="button" onClick={() => handleEditQuestion(idx)}>zapisz</button>
+                            <button type="button" onClick={() => handleDeleteQuestion(idx)}>usun</button>
                         </li>
                     ))}
                 </ul>

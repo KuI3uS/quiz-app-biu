@@ -28,7 +28,7 @@ export default function Layout() {
                         onChange={e => setSearch(e.target.value)}
                         style={{ padding: '4px', borderRadius: '4px', border: '1px solid #ccc' }}
                     />
-                    <button type="submit">🔍</button>
+                    <button type="submit">szukaj</button>
                 </form>
                 <Link to="/">Home</Link>
                 <Link to="/random">Losowy quiz</Link>

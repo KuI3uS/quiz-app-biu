@@ -162,7 +162,7 @@ export default function QuizEngine() {
                 <h2>Twój wynik: {score} / {quiz.questions.length} ({percent}%)</h2>
                 <p>⭐ Średnia ocena: {averageRating} / 5</p>
                 {!duelId && (score / quiz.questions.length) >= 0.51 && (
-                    <button onClick={generatePDF}>📄 Pobierz certyfikat PDF</button>
+                    <button onClick={generatePDF}>Pobierz certyfikat PDF</button>
                 )}
                 {(score / quiz.questions.length) < 0.51 && (
                     <p style={{ color: 'crimson', marginTop: '1rem' }}>
@@ -170,8 +170,8 @@ export default function QuizEngine() {
                     </p>
                 )}
                 <div style={{ marginTop: '1rem' }}>
-                    <button onClick={() => navigator.clipboard.writeText(window.location.href)}>📋 Skopiuj link do quizu</button>
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" style={{ marginLeft: '1rem' }}>📤 Udostępnij na Facebooku</a>
+                    <button onClick={() => navigator.clipboard.writeText(window.location.href)}> Skopiuj link do quizu</button>
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" style={{ marginLeft: '1rem' }}> Udostępnij na Facebooku</a>
                 </div>
                 <QuizComments quizId={quiz.docId} />
                 <Leaderboard quizId={quiz.docId} />

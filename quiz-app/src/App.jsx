@@ -17,6 +17,7 @@ import DuelRoom from "./duel/DuelRoom.jsx";
 import SearchQuizzes from './Quiz/SearchQuizzes.jsx';
 import { lazy, Suspense } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
+import './App.scss';
 
 
 const QuizInfo = lazy(() => import('./Quiz/QuizInfo.jsx'));
